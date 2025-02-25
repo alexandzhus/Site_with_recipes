@@ -1,0 +1,117 @@
+html, body {
+  position: absolute;
+  left: 99px;
+  width: 1440px;
+  height: 1024px;
+  background: #ffffff;
+  background-blend-mode: normal;
+}
+
+
+.page-header {
+  background: #c2c4d1;
+  background-blend-mode: normal;
+  box-sizing: border-box;
+  border: 2px solid rgba(221, 156, 231, 0.5);
+}
+
+
+.site-name {
+
+  left: 302px;
+  top: 20px;
+  width: 531px;
+  height: 48px;
+  font-family: Allison;
+  font-size: 49px;
+  font-weight: 400;
+  line-height: 44px;
+  text-align: center;
+  letter-spacing: 11px;
+  display: flex;
+  align-items: center;
+}
+
+.deviz {
+  left: 460px;
+  top: 71px;
+  width: 185px;
+  height: 26px;
+  font-family: Arima;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 2.8px;
+}
+
+.login{
+  float: right;
+
+}
+
+.sidebar-left {
+    height: 100%; /* Full-height: remove this if you want "auto" height */
+    width: 160px; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: grey; /* Black */
+    overflow: auto
+    padding-top: 20px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidebar-left {padding-top: 15px;}
+
+}
+
+.content {
+  padding: 5px 10px 5px 10px;
+    box-sizing: border-box;
+    background: #c2c4d1;
+    border: 2px solid rgba(221, 156, 231, 0.5);
+}
+
+footer {
+  border: 2px solid rgba(221, 156, 231, 0.5);
+}
+
+.form-input {
+    width: 300px;
+    font-size: 16px;
+}
+
+.form-label {
+    display: inline-block;
+    min-width: 150px;
+    vertical-align: top;
+}
+
+.form-error ul {
+    list-style: none;
+    padding: 0;
+    color: #CC0000;
+}
+
+.form-button {
+    min-width: 200px;
+    font-size: 16px;
+}
+
+.rating-stars {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    font-size: 2em;
+}
+.rating-stars .star {
+    display: inline-block;
+    cursor: pointer;
+    color: #ddd;
+}
+.rating-stars .star:hover,
+.rating-stars .star.active {
+    color: gold;
+}
+
