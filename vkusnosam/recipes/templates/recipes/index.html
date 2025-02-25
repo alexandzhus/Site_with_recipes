@@ -1,12 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Тестовая страница сервера</h1>
+{% extends 'base.html' %}
 
+{% block content %}
 
-</body>
-</html>
+<!-- Кнопки для сортировки и поиск-->
+<div>
+<form method="get" action="">
+        {% csrf_token %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in search_form %}
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
+        <p><button type="submit">Применить</button></p>
+</form>
+</div>
+
+<div>
+<form method="get" action="">
+        {% csrf_token %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in rating_form %}
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
+        <p><button type="submit">Применить</button></p>
+</form>
+</div>
+
+{% for rec in recipes %}
+    <p>рейтинг: <span id="average-rating">{{ rec.average_rating|floatformat:1 }}</span></p>
+    <p>Название блюда: <a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
+        {% if rec.image %}
+            <p><a href="{{ rec.get_absolute_url }}"><img src="{{rec.image.url}}"></a></p>
+        {% else %}
+            <p><img src="/media/default_images/no_image.jpeg"></p>
+        {% endif %}
+    <p>Продукты: {{rec.products}}</p>
+    <p>Пользователь: {{rec.user}}</p>
+    <p>Время приготовления: {{rec.time_preparing }}</p>
+    <p><a href="{{ rec.get_absolute_url }}#comments">Кол-во комментариев({{rec.comments_quantity}})</a></p>
+    {% empty %}
+        <p>По вашему запросу ничего не найдено! Попробуйте еще раз!</p>
+        <p><a href="{% url 'home' %}">На главную</a></p>
+{% endfor %}
+
+{% endblock %}
