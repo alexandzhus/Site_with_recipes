@@ -1,5 +1,5 @@
 
-Рецепты с тегом: "{{ tag.name }}"</h1>
+<h1>Рецепты с тегом: "{{ tag.name }}"</h1>
     <ul>
         {% for recipe in recipes %}
             <li><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></li>
