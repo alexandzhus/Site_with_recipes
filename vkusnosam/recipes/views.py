@@ -4,7 +4,7 @@ from typing import Dict
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin, PermissionRequiredMixin, LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q, Count, Avg, Value
+from django.db.models import Q, Count, Avg, Value, QuerySet
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -41,11 +41,11 @@ class HomeView(ListView):
     template_name = 'recipes/index.html'
     paginate_by = 4
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """
         Метод для сортировки рецептов.
         Сортирует по дате, по кол-ву комментариев, по рейтингу.
-        :return:
+        :return: QuerySet
         """
         queryset = Recipe.objects.all().annotate(comments_quantity=Count('comments'),
                                                  average_rating=Coalesce(Avg('ratings__score'), Value(0.0))
@@ -91,10 +91,10 @@ class TagCloudByCategoryView(ListView):
     template_name = 'recipes/tag_cloud.html'
     context_object_name = 'tags'
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """
         Метод для получения категории тегов.
-        :return:
+        :return: QuerySet
         """
         tag_category_slug = self.kwargs.get('tag_category_slug')
         if tag_category_slug:
@@ -131,18 +131,18 @@ class TagCloudByCategoryView(ListView):
 
 
 
-class TaggedRecipesView(ListView):
+class TaggedRecipesView(ListView) :
     """
     Представление для фильтрации рецептов с конкретным тегом.
     """
     template_name = 'recipes/tagged_recipes.html'
     context_object_name = 'recipes'
 
-    def get_queryset(self) -> list:
+    def get_queryset(self) -> QuerySet:
         """
         Метод для получения списка объектов.
         Возвращает список рецептов связанных с определенным тегом.
-        :return: List
+        :return: QuerySet
         """
         tag_slug = self.kwargs.get('tag_slug')
         self.tag = get_object_or_404(Tag, slug=tag_slug)
