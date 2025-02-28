@@ -1,23 +1,29 @@
+{% extends 'base.html' %}
 
-
+{% block content %}
 <div class="category-nav">
-        <strong>Категории тегов:</strong>
-        <a href="{% url 'tag_cloud_by_category' %}">Все</a>
+        <strong>Категории рецептов:</strong>
+        <a href="{% url 'tag_cloud_by_category' %}">Все| </a>
         {% for cat_tag in categorys_tags %}
-            <a href='{{ cat_tag.get_absolute_url }}'>{{ cat_tag.name }}
+            <a href='{{ cat_tag.get_absolute_url }}'>{{ cat_tag.name }} |
         {% endfor %}
             </a>
  </div>
     <div class="tag-cloud">
         {% if category_tag %}
-            <h1>Облако тегов для: "{{category_tag.name}}"</h1>
+            <h1> Теги для: "{{category_tag.name}}"</h1>
         {% else %}
-            <h1>Облако тегов для всех категорий тегов</h1>
+            <h1>Все теги для всех категорий блюд: </h1>
         {% endif %}
-        {% for tag in tags %}
-            <a href="{% url 'tagged_recipes' tag_slug=tag.slug %}" class="tag-{{ tag.weight }}">
-                {{ tag.name }} ({{ tag.num_times }}) |
-            </a>
-        {% endfor %}
-    </div>
 
+        {% if tags %}
+            {% for tag in tags %}
+                <a href="{% url 'tagged_recipes' tag_slug=tag.slug %}" class="tag-{{ tag.weight }}">
+                    {{ tag.name }} ({{ tag.num_times }}) |
+                </a>
+            {% endfor %}
+         {% else %}
+                <h3>Пока нет тегов</h3>
+        {% endif %}
+    </div>
+{% endblock %}
