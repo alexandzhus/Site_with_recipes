@@ -58,7 +58,7 @@ class HomeView(ListView):
         sort_by_ratings = self.request.GET.get('sort_by_ratings')
         sort_by = self.request.GET.get('sort_by', '-time_create')
         if query:
-             queryset = queryset.filter(Q(name__iregex=query) | Q(products__iregex=query))
+             queryset = queryset.filter(Q(name__iregex=query) | Q(products__iregex=query) | Q(calorie__icontains=query))
         if sort_by in['time_create', '-time_create', 'comments_quantity', '-comments_quantity']:
             queryset = queryset.order_by(sort_by)
         if sort_by_ratings == '-ratings':
@@ -209,11 +209,13 @@ class RecipeDetail(FormMixin, DetailView):
         :param queryset:
         :return:
         """
-        return get_object_or_404(Recipe, slug=self.kwargs[self.slug_url_kwarg])
+        recipe = get_object_or_404(Recipe, slug=self.kwargs[self.slug_url_kwarg])
+
+        return recipe
 
     def post(self, request, *args, **kwargs):
         """
-        Метод ддя обработки POST-запроса (добавление комментария)
+        Метод для обработки POST-запроса (добавление комментария)
         """
         self.object = self.get_object()  # Получаем объект рецепта
         form = self.get_form()
@@ -310,7 +312,7 @@ class DeleteRecipe(UserPassesTestMixin, DeleteView):
     """
     model = Recipe
     template_name = 'recipes/delete_recipe.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('users:profile')
     context_object_name = 'recipe'
 
     def get_context_data(self, **kwargs) -> Dict:
