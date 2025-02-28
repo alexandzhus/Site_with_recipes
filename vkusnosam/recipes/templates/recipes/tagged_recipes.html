@@ -1,7 +1,10 @@
-
+{% extends 'base.html' %}
+{% block content %}
 <h1>Рецепты с тегом: "{{ tag.name }}"</h1>
     <ul>
         {% for recipe in recipes %}
             <li><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></li>
         {% endfor %}
     </ul>
+    <a href="{% url 'tag_cloud_by_category' %}">Обратно</a>
+{% endblock %}
