@@ -24,11 +24,16 @@
 {% if users_recipes %}
     {% for recipe in  users_recipes %}
         {% if recipe.image %}
-            <p><img src="{{ recipe.image.url }}" style="width=50px" height="50px">
-                <a href="{{ recipe.get_absolute_url  }}">{{recipe.name}}</a></p>
+            <p>
+                <a href="{% url 'update_recipe' slug=recipe.slug %}">
+                    <img src="{{ recipe.image.url }}" style="width=50px" height="50px"></a>
+            </p>
         {% else %}
-            <p><img src="/media/default_images/no_image.jpeg" style="width=50px" height="50px">
-                <a href="{% url 'update_recipe' slug=recipe.slug %}">{{recipe.name}}</a></p>
+            <p>
+                <a href="{% url 'update_recipe' slug=recipe.slug %}">
+                    <img src="/media/default_images/no_image.jpeg" style="width=50px" height="50px"> {{recipe.name}}
+                </a>
+            </p>
         {% endif %}
     {% endfor %}
 {% endif %}
