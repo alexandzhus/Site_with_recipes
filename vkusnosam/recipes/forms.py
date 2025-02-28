@@ -3,6 +3,26 @@ from django.core.exceptions import ValidationError
 
 from recipes.models import Recipe, Comment, Rating
 
+def validate_text_format(value):
+    """
+    Пользовательский валидатор.
+    Проверяет, что данные внесены правильно.
+    В поле были введены данные через пробел и заканчиваются точкой с запятой.
+    :param value:
+    :return:
+    """
+    lines = value.strip().split('; ') # Разделяем данные по точке с запятой
+    for line in lines:
+        if line.strip():  # Пропускаем пустые строки
+            if '-' not in line:
+                raise ValidationError(
+                    f'Ошибка в строке: "{line}". Между продуктом и граммовками надо ставить дефис(Мука - 150гр.;)'
+                )
+            if ';' not in line:
+                raise ValidationError(
+                    f'Ошибка в строке: "{line}". Каждая строка должна заканчиваться точкой с запятой ;'
+                )
+
 
 class RecipeForm(forms.ModelForm):
     """
@@ -14,6 +34,9 @@ class RecipeForm(forms.ModelForm):
                   'time_preparing', 'tags_category','calorie', 'steps_description']
         labels = {
             'tags_category': 'Выберите к какому типа блюда относится рецепт',
+        }
+        validators = {
+            'products': [validate_text_format],
         }
 
     def clean_name(self) -> str:
@@ -28,6 +51,15 @@ class RecipeForm(forms.ModelForm):
         elif len(name) > 50:
             raise ValidationError("Длина более 50 символов")
         return name
+    def clean_products(self) -> str:
+        """
+        Метод для проверки валидности поля products.
+        Проверят, что в поле было заполнено правильно.
+        :return: Str
+        """
+        products = self.cleaned_data['products']
+        validate_text_format(products)
+        return products
 
 
 class CommentForm(forms.ModelForm):
@@ -59,10 +91,9 @@ class SearchSortForm(forms.Form):
     """
     Форма для поиска.
     """
-    search = forms.CharField(label='Поиск', max_length=255, required=False)
     sort_by = forms.ChoiceField(
         label='Сортировать по: ', choices=[
-            ('', 'Выбрать'),
+            ('', '--Выбрать--'),
             ('-time_create', '---Новые рецепты первые---'),
             ('time_create', '---Старые рецепты первые---'),
             ('-comments_quantity', '---Кол-ву комментариев(Больше всего комментариев)---'),
@@ -75,7 +106,7 @@ class SearchSortForm(forms.Form):
 class RatingSortForm(forms.Form):
     sort_by_ratings = forms.ChoiceField(
         label='По рейтингу: ', choices=[
-            ('', 'Выбрать'),
+            ('', '--Выбрать--'),
             ('-ratings', '---По рейтингу(больше)---'),
             ('ratings', '---По рейтингу(меньше)---'),
         ], required=False
