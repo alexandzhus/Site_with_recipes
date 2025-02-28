@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
-
+{% load recipe_tags %}
 {% block content %}
 
 <!-- Кнопки для сортировки и поиск-->
+<div>
+    <form action="{% url 'home' %}" method="get">
+        <input name="search" type="text" placeholder="Поиск">
+        <button type="submit">Искать</button>
+    </form>
+</div>
 <div>
 <form method="get" action="">
         {% csrf_token %}
@@ -25,17 +31,22 @@
         {% endfor %}
         <p><button type="submit">Применить</button></p>
 </form>
+<h2><a href="{% url 'tag_cloud_by_category' %}">Искать рецепты по категориям</a></h2>
 </div>
 
 {% for rec in recipes %}
-    <p>рейтинг: <span id="average-rating">{{ rec.average_rating|floatformat:1 }}</span></p>
     <p>Название блюда: <a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
+    <p>рейтинг: <span id="average-rating">{{ rec.average_rating|floatformat:1 }}</span></p>
         {% if rec.image %}
             <p><a href="{{ rec.get_absolute_url }}"><img src="{{rec.image.url}}"></a></p>
         {% else %}
             <p><img src="/media/default_images/no_image.jpeg"></p>
         {% endif %}
-    <p>Продукты: {{rec.products}}</p>
+    <p>Продукты:
+        {% for i in rec.create_list_from_data_field_products %}
+            {{i|remove_brackets}}{% if not forloop.last %},{% else %}.{% endif %}
+        {% endfor %}
+    </p>
     <p>Пользователь: {{rec.user}}</p>
     <p>Время приготовления: {{rec.time_preparing }}</p>
     <p><a href="{{ rec.get_absolute_url }}#comments">Кол-во комментариев({{rec.comments_quantity}})</a></p>
@@ -44,4 +55,33 @@
         <p><a href="{% url 'home' %}">На главную</a></p>
 {% endfor %}
 
+{% endblock %}
+
+{% block navigation %}
+{% if page_obj.has_other_pages %}
+	<nav class="list-pages">
+		<ul>
+			{% if page_obj.has_previous %}
+			<li class="page-num">
+				<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+			</li>
+			{% endif %}
+			{% for p in page_obj.paginator.page_range %}
+				{% if page_obj.number == p %}
+					<li class="page-num page-num-selected">{{p}}</li>
+
+				{% elif p >=  page_obj.number|add:-2  and p <=  page_obj.number|add:2  %}
+					<li class="page-num">
+						<a href="?page={{ p }}">{{ p }}</a>
+					</li>
+				{% endif %}
+			{% endfor %}
+			{% if page_obj.has_next %}
+			<li class="page-num">
+				<a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+			</li>
+			{% endif %}
+		</ul>
+	</nav>
+{% endif %}
 {% endblock %}
