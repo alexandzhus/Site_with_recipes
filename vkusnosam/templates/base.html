@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load recipe_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,16 +49,43 @@
 
 <!--  Sidebar слева  -->
     <aside class="sidebar-left">
-        Левый sidebar
-
-
+        Топ блюд по рейтингу:
+    {% rating_recipes_list  as reci %}
+        {% for rec in reci %}
+            <p>Название блюда: <a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
+            {% if rec.image %}
+                <p><a href="{{ rec.get_absolute_url }}"><img src="{{rec.image.url}}" width="75px" height="75px" ></a></p>
+            {% else %}
+                <p><img src="/media/default_images/no_image.jpeg" width="75px" height="75px"></p>
+            {% endif %}
+        {% endfor %}
     </aside>
 <!-- конец левого Sidebar -->
+
+<!--  Sidebar справа  -->
+    <aside class="sidebar-right">
+        Топ блюд по просмотрам:
+    {% viewing_quantity_recipes  as recip %}
+        {% for rec in recip %}
+            <p>Название блюда: <a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
+            {% if rec.image %}
+                <p><a href="{{ rec.get_absolute_url }}"><img src="{{rec.image.url}}" width="75px" height="75px" ></a></p>
+            {% else %}
+                <p><img src="/media/default_images/no_image.jpeg" width="75px" height="75px"></p>
+            {% endif %}
+        {% endfor %}
+    </aside>
+<!-- конец правого Sidebar -->
 <!-- Блок контента-->
 <div class="content">
     {% block content %}
     {% endblock %}
 </div>
+
+{% block navigation %}
+
+{% endblock %}
+
 <!--Конец блока контента-->
 
 <!--Футер-->
