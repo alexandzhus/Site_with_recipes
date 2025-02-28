@@ -2,10 +2,13 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import F
 from django.utils.text import slugify
 from django.urls import reverse
 from taggit.managers import TaggableManager
-from unidecode import unidecode
+
+
+
 
 def translit_to_eng(s: str) -> str:
     """
@@ -37,6 +40,7 @@ class Recipe(models.Model):
     tags = TaggableManager()
     tags_category = models.ForeignKey('TagsCategory', on_delete=models.CASCADE, related_name='recipes_cat',
                                       verbose_name='Категория тегов', null=True)
+    views = models.PositiveIntegerField(default=0, verbose_name='Кол-во просмотров')  # Поле для хранения количества просмотров
     number_servings = models.PositiveIntegerField(blank=True, null=True, verbose_name="Кол-во порций")
     time_preparing = models.CharField(max_length=100, blank=True, verbose_name="Время приготовления")
     calorie = models.CharField(max_length=100, blank=True, verbose_name="Калорийность")
@@ -77,6 +81,37 @@ class Recipe(models.Model):
         :return:
         """
         return self.comments.Count('comments')
+
+    def increment_views(self):
+        """
+        Метод увеличивает кол-во числа просмотров.
+        :return:
+        """
+        Recipe.objects.filter(pk=self.pk).update(views=F('views') + 1)
+        self.refresh_from_db()  # Обновляем объект из базы данных
+
+    def create_list_from_data_field_products(self) -> list:
+        """
+        Метод для создания списка из данных поля products.
+        :return: List
+        """
+        data_string = self.products
+        # Убираем лишние пробелы и разбиваем текст на строки по запятым
+        lines = [line.strip() for line in data_string.split(";" or ',' or '.' or '!' or ':') if line.strip()]
+        result_dict = {}
+        # Обрабатываем каждую строку
+        for line in lines:
+            # Разделяем строку по дефису
+            key, value = line.split("-", 1)  # 1 означает, что разделяем только по первому дефису
+            # Убираем лишние пробелы и добавляем в словарь
+            result_dict[key.strip()] = value.strip()
+        # создаем список с ключами словаря.
+        keys_list = list(result_dict.keys())
+        # cleaned_ingredients = [remove_text_in_brackets(item) for item in keys_list]
+        # for i in cleaned_ingredients:
+        #
+        #     print(i)
+        return keys_list
 
     class Meta:
         """
