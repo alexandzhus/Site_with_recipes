@@ -20,8 +20,8 @@
             </form>
     {% endif %}
 {% endif %}
-
-<p>{{recipe.time_create}}</p>
+{{recipe.increment_views}}
+<p>{{recipe.time_create|date:"d-m-Y H:i:s"}}</p>
 <p>{{ recipe.user }}</p>
 {% if recipe.image %}
     <p><img src="{{recipe.image.url}}"></p>
