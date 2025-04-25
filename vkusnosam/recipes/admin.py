@@ -29,12 +29,12 @@ class TagsCategoryAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-class RecipePhotosTabularInline(admin.TabularInline):
-    """
-    Класс для связанного отображения в модели Recipe и RecipePhotos
-    """
-    model = RecipePhotos
-    raw_id_fields = ['recipe']
+# class RecipePhotosTabularInline(admin.TabularInline):
+#     """
+#     Класс для связанного отображения в модели Recipe и RecipePhotos
+#     """
+#     model = RecipePhotos
+#     raw_id_fields = ['recipe']
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
@@ -42,7 +42,7 @@ class RecipeAdmin(admin.ModelAdmin):
     Клас для отображения модели Recipe в админке
     """
     fields = ['name', 'slug', 'views', 'image', 'description', 'products',
-              'user', 'tags_category', 'number_servings', 'time_preparing', 'steps_description',
+              'user', 'tags_category', 'number_servings', 'time_preparing',
               'calorie']
     list_display = ['id', 'name', 'views', 'slug', 'product_image', 'brief_description',
               'user', 'tag_list', 'number_servings', 'time_preparing',
@@ -51,7 +51,6 @@ class RecipeAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ("name",)}
     list_per_page = 6
     save_on_top = True
-    inlines = [RecipePhotosTabularInline]
 
 
     def get_queryset(self, request):
@@ -81,5 +80,6 @@ class RecipeAdmin(admin.ModelAdmin):
         return f'{recipe.description[0:75]}' + "..."
 
 
-admin.site.register(RecipePhotos)
+# admin.site.register(RecipePhotos)
 admin.site.register(Rating)
+admin.site.register(RecipeStepPreparing)
