@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from taggit.managers import TaggableManager
 
-
+from recipes.utils import filter_valid_lines
 
 
 def translit_to_eng(s: str) -> str:
@@ -42,9 +42,8 @@ class Recipe(models.Model):
                                       verbose_name='Категория тегов', null=True)
     views = models.PositiveIntegerField(default=0, verbose_name='Кол-во просмотров')  # Поле для хранения количества просмотров
     number_servings = models.PositiveIntegerField(blank=True, null=True, verbose_name="Кол-во порций")
-    time_preparing = models.CharField(max_length=100, blank=True, verbose_name="Время приготовления")
-    calorie = models.CharField(max_length=100, blank=True, verbose_name="Калорийность")
-    steps_description = models.TextField(verbose_name='Пошаговое описание рецепта', blank=True)
+    time_preparing = models.PositiveIntegerField(blank=True, verbose_name="Время приготовления", null=True)
+    calorie = models.PositiveIntegerField(blank=True, verbose_name="Калорийность", null=True)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
 
     def __str__(self) -> str:
@@ -95,23 +94,25 @@ class Recipe(models.Model):
         Метод для создания списка из данных поля products.
         :return: List
         """
-        data_string = self.products
-        # Убираем лишние пробелы и разбиваем текст на строки по запятым
-        lines = [line.strip() for line in data_string.split(";" or ',' or '.' or '!' or ':') if line.strip()]
+        # фильтруем строки, оставляя только те, которые содержат тире и заканчиваются на точку с запятой(метод из
+        # файла utils.py).
+        data_string = filter_valid_lines(self.products)
+        # пустой словарь
         result_dict = {}
         # Обрабатываем каждую строку
-        for line in lines:
+        for line in data_string:
+            # Проверяем, что строка заканчивается на точку с запятой
+            if not line.endswith(';'):
+                continue  # Пропускаем строки, которые не заканчиваются на ;
+            line = line.rstrip(';').strip()
             # Разделяем строку по дефису
             key, value = line.split("-", 1)  # 1 означает, что разделяем только по первому дефису
             # Убираем лишние пробелы и добавляем в словарь
             result_dict[key.strip()] = value.strip()
         # создаем список с ключами словаря.
         keys_list = list(result_dict.keys())
-        # cleaned_ingredients = [remove_text_in_brackets(item) for item in keys_list]
-        # for i in cleaned_ingredients:
-        #
-        #     print(i)
         return keys_list
+
 
     class Meta:
         """
@@ -123,25 +124,6 @@ class Recipe(models.Model):
         indexes = [
             models.Index(fields=['-time_create'])
         ]
-
-
-class RecipePhotos(models.Model):
-    """
-    Модель фотографий пошагового приготовления рецепта
-    """
-    recipe = models.ForeignKey(Recipe, blank=True, related_name='recipes_photo',
-                                              verbose_name="Фотографии Пошагового рецепта", default=None,
-                                              on_delete=models.CASCADE)
-    step_preparing_images = models.ImageField(blank=True, null=True, default=None,
-                                              verbose_name='Изображения пошагового приготовления',
-                                              upload_to=f'recipe_step_preparing/{recipe.name}/%Y/%m/%d')
-
-    class Meta:
-        """
-        Класс Meta отвечает за поведение полей модели
-        """
-        verbose_name = 'Фото пошагового приготовления'
-        verbose_name_plural = "Фотографии пошагового приготовления"
 
 
 class TagsCategory(models.Model):
@@ -221,3 +203,38 @@ class Rating(models.Model):
         unique_together = ('user', 'recipe') # Это команда не позволит пользователю повторно оставить оценку.
         verbose_name = 'Рейтинг'
         verbose_name_plural = "Рейтинги"
+
+
+class RecipeStepPreparing(models.Model):
+    """
+    Модель для шагов приготовления рецепта.
+    """
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, verbose_name='Изображения пошагового рецепта',
+                               related_name='recipes_photo')
+    step_image = models.ImageField(blank=True, null=True, default=None,
+                                   verbose_name='Изображения пошагового приготовления',
+                                   upload_to=f'recipe_step_preparing/{recipe.name}/%Y/%m/%d')
+    users = models.ForeignKey(get_user_model(), verbose_name='Пользователь', on_delete=models.CASCADE)
+    # step = models.PositiveIntegerField(default=1, verbose_name='Шаг')
+    step_description = models.TextField(verbose_name="Описание шага приготовления", blank=True, null=True)
+
+    # def increment_step(self):
+    #     """
+    #     Метод для увеличения шага на единицу
+    #     :return:
+    #     """
+    #     self.step += 1
+    #     self.save()
+
+
+    def __str__(self) -> str:
+        """
+        Метод для строкового отображения модели
+        :return: Str
+        """
+        return (f'Пользователь {self.users} добавил к рецепту {self.recipe} изображение и '
+                f'описание')
+
+    class Meta:
+        verbose_name = "Шаг приготовления рецепта"
+        verbose_name_plural = "Шаги приготовления рецепта"
