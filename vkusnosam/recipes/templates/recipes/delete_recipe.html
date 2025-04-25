@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
-
 {% block content %}
-
-
+<section>
 <h1> Вы уверены, что хотите удалить рецепт {{recipe.name}}?</h1>
-<br>
 <form action="" method="post">
     {% csrf_token %}
     <p><button type="submit">Удалить</button></p>
-
 </form>
-
+</section>
+<div class="no_delete_button">
 <p><a href="{% url 'update_recipe' slug=recipe.slug  %}">Нет не надо</a></p>
+</div>
 {% endblock %}
