@@ -5,7 +5,8 @@
 <head>
     <title>{{title}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link type="text/css" href="{% static 'recipes/css/styles.css' %}" rel="stylesheet" />
+    <link type="text/css" href="{% static 'recipes/css/styles.css' %}" rel="stylesheet"/>
+    <link type="text/css" href="{% static 'recipes/css/normalize.css' %}" rel="stylesheet"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{% static 'recipes/images/favicon.ico' %}" type="image/x-icon"/>
 
@@ -14,7 +15,8 @@
     <!-- блок хедер -->
     <header class="page-header">
     <a href="{% url 'home' %}">
-        <img src="/media/default_images/logo.png" title="Главная страница" class="logo" width="50px" height="50px">
+        <img src="/media/default_images/logo.png" title="Главная страница сайта"
+             alt="Логотип сайта" class="logo" width="50px" height="50px">
     </a>
 
     <div class="site-name">ВкусноСам</div>
@@ -29,25 +31,31 @@
     </ul>
     {% endif %}
 
-    {% if user.is_authenticated %}
-        <!--   Форма для выхода из аккаунта     -->
-        <form method="post" action="{% url 'users:logout' %}">
-            {% csrf_token %}
-            <button type="submit">Выйти</button>
-        </form>
-        <p><a href="{% url 'users:profile' %}">Профиль {{user.username}}</a></p>
-        <p><a href="{% url 'create_recipe' %}">Добавить рецепт!"</a></p>
-    {% else %}
-        <p><a href="{% url 'users:login' %}">Авторизация</a></p>
-        <p><a href="{% url 'users:register' %}">Регистрация</a></p>
-    {% endif %}
-    {% if user.is_superuser %}
-        <a href=" {% url 'admin:index' %} ">Админка</a>
-    {% endif %}
+    <!--     Блок навигации    -->
+    <nav>
+        {% if user.is_authenticated %}
+            <!--   Форма для выхода из аккаунта     -->
+            <form method="post" action="{% url 'users:logout' %}">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+
+            <p><a href="{% url 'users:profile' %}">Профиль {{user.username}}</a></p>
+            <p><a href="{% url 'create_recipe' %}">Добавить рецепт!"</a></p>
+        {% else %}
+            <p><a href="{% url 'users:login' %}">Авторизация</a></p>
+            <p><a href="{% url 'users:register' %}">Регистрация</a></p>
+            <p ><a href="{% url 'users:password_reset' %}">Забыли пароль?</a></p>
+        {% endif %}
+        {% if user.is_superuser %}
+            <a href=" {% url 'admin:index' %} ">Админка</a>
+        {% endif %}
+    </nav>
     </header>
     <!-- конец блока хедер -->
 
 <!--  Sidebar слева  -->
+
     <aside class="sidebar-left">
         Топ блюд по рейтингу:
     {% rating_recipes_list  as reci %}
@@ -76,14 +84,14 @@
         {% endfor %}
     </aside>
 <!-- конец правого Sidebar -->
+
 <!-- Блок контента-->
-<div class="content">
+<main class="content">
     {% block content %}
     {% endblock %}
-</div>
+</main>
 
 {% block navigation %}
-
 {% endblock %}
 
 <!--Конец блока контента-->
@@ -99,5 +107,5 @@
 </footer>
 <!--конец футера и страницы-->
 </body>
-<script type="text/javascript" src='{% static "recipes/js\forSite.js" %}'></script>
+<script type="text/javascript" src='{% static "recipes/js/forSite.js" %}'></script>
 </html>
