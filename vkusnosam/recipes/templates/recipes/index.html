@@ -2,15 +2,20 @@
 {% load recipe_tags %}
 {% block content %}
 
+<!--Секция поиска и сортировки начало-->
+<div class="search-and-sort-section">
 <!-- Кнопки для сортировки и поиск-->
-<div>
+<section aria-label="Поиск рецептов" class="search">
+    <h2>Поиск рецептов</h2>
     <form action="{% url 'home' %}" method="get">
         <input name="search" type="text" placeholder="Поиск">
         <button type="submit">Искать</button>
     </form>
-</div>
-<div>
-<form method="get" action="">
+</section>
+
+<section aria-label="Фильтры для рецептов" class="filters">
+    <h2>Фильтры</h2>
+    <form method="get" action="">
         {% csrf_token %}
         <div class="form-error">{{ form.non_field_errors }}</div>
         {% for f in search_form %}
@@ -18,11 +23,9 @@
             <div class="form-error">{{ f.errors }}</div>
         {% endfor %}
         <p><button type="submit">Применить</button></p>
-</form>
-</div>
+    </form>
 
-<div>
-<form method="get" action="">
+    <form method="get" action="">
         {% csrf_token %}
         <div class="form-error">{{ form.non_field_errors }}</div>
         {% for f in rating_form %}
@@ -30,36 +33,51 @@
             <div class="form-error">{{ f.errors }}</div>
         {% endfor %}
         <p><button type="submit">Применить</button></p>
-</form>
-<h2><a href="{% url 'tag_cloud_by_category' %}">Искать рецепты по категориям</a></h2>
+    </form>
+</section>
+
+<section aria-label="Искать рецепты по категориям и тегам">
+    <h2><a href="{% url 'tag_cloud_by_category' %}">Искать рецепты по категориям</a></h2>
+</section>
 </div>
+<!--Конец секции поиска и сортировки -->
 
-{% for rec in recipes %}
-    <p>Название блюда: <a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
-    <p>рейтинг: <span id="average-rating">{{ rec.average_rating|floatformat:1 }}</span></p>
-        {% if rec.image %}
-            <p><a href="{{ rec.get_absolute_url }}"><img src="{{rec.image.url}}"></a></p>
-        {% else %}
-            <p><img src="/media/default_images/no_image.jpeg"></p>
-        {% endif %}
-    <p>Продукты:
-        {% for i in rec.create_list_from_data_field_products %}
-            {{i|remove_brackets}}{% if not forloop.last %},{% else %}.{% endif %}
+<section aria-label="Список рецептов" >
+    <h2>Список рецептов</h2>
+       <div class="recipe-grid">
+        {% for rec in recipes %}
+            <article class="recipe-card">
+            <h3><a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></h3>
+            <p>рейтинг: <span id="average-rating">{{ rec.average_rating|floatformat:1 }}</span></p>
+            <figure>
+                {% if rec.image %}
+                    <a href="{{ rec.get_absolute_url }}">
+                        <img src="{{rec.image.url}}" alt="{{rec.name}}">
+                    </a>
+                {% else %}
+                    <img src="/media/default_images/no_image.jpeg" alt="Изображение отсутствует">
+                {% endif %}
+            </figure>
+            <p> Используемые продукты:
+                {% for i in rec.create_list_from_data_field_products %}
+                    {{i|remove_brackets}}{% if not forloop.last %},{% else %}.{% endif %}
+                {% endfor %}
+            </p>
+            <p>Пользователь: {{rec.user}}</p>
+            <p>Время приготовления: {{rec.time_preparing }}</p>
+            <p><a href="{{ rec.get_absolute_url }}#comments">Кол-во комментариев({{rec.comments_quantity}})</a></p>
+            </article>
+            {% empty %}
+                <p>По вашему запросу ничего не найдено! Попробуйте еще раз!</p>
+                <p><a href="{% url 'home' %}">На главную</a></p>
         {% endfor %}
-    </p>
-    <p>Пользователь: {{rec.user}}</p>
-    <p>Время приготовления: {{rec.time_preparing }}</p>
-    <p><a href="{{ rec.get_absolute_url }}#comments">Кол-во комментариев({{rec.comments_quantity}})</a></p>
-    {% empty %}
-        <p>По вашему запросу ничего не найдено! Попробуйте еще раз!</p>
-        <p><a href="{% url 'home' %}">На главную</a></p>
-{% endfor %}
-
+    </div>
+</section>
 {% endblock %}
 
 {% block navigation %}
 {% if page_obj.has_other_pages %}
-	<nav class="list-pages">
+	<nav class="list-pages" aria-label="Навигация по страницам">>
 		<ul>
 			{% if page_obj.has_previous %}
 			<li class="page-num">
@@ -69,7 +87,6 @@
 			{% for p in page_obj.paginator.page_range %}
 				{% if page_obj.number == p %}
 					<li class="page-num page-num-selected">{{p}}</li>
-
 				{% elif p >=  page_obj.number|add:-2  and p <=  page_obj.number|add:2  %}
 					<li class="page-num">
 						<a href="?page={{ p }}">{{ p }}</a>
