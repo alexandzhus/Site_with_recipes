@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-
-
 {% block content %}
+<!-- Профиль пользователя -->
+<section aria-label="Профиль пользователя">
     <h1>Профиль {{user.username}}</h1>
 <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -17,31 +17,57 @@
         {% endfor %}
         <p><button type="submit">Сохранить</button></p>
 </form>
+</section>
 <hr>
 <p><a href="{% url 'home' %}">На главную</a></p>
 <hr>
+
+<!-- Список рецептов пользователя -->
+<section aria-label="Список ваших рецептов"></section>
 <h2>Ваши рецепты: </h2>
 {% if users_recipes %}
-    {% for recipe in  users_recipes %}
-        {% if recipe.image %}
-            <p>
-                <a href="{% url 'update_recipe' slug=recipe.slug %}">
-                    <img src="{{ recipe.image.url }}" style="width=50px" height="50px"></a>
-            </p>
-        {% else %}
-            <p>
-                <a href="{% url 'update_recipe' slug=recipe.slug %}">
-                    <img src="/media/default_images/no_image.jpeg" style="width=50px" height="50px"> {{recipe.name}}
-                </a>
-            </p>
-        {% endif %}
-    {% endfor %}
+    <ul>
+        {% for recipe in users_recipes %}
+            {% if recipe.image %}
+                    <li><a href="{% url 'update_recipe' slug=recipe.slug %}">{{recipe.name}}</a>
+                        <figure>
+                            <a href="{% url 'update_recipe' slug=recipe.slug %}">
+                                <img src="{{ recipe.image.url }}" style="width=50px" height="50px"
+                                     alt="{{recipe.name}}">
+                            </a>
+                        </figure>
+                    </li>
+            {% else %}
+                    <li>
+                        <a href="{% url 'update_recipe' slug=recipe.slug %}">
+                            <figure>
+                                <img src="/media/default_images/no_image.jpeg" style="width=50px" height="50px"
+                                     alt="Нет изображения">
+                                {{recipe.name}}
+                            </figure>
+                        </a>
+                    </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% else %}
+    <h3>У вас нет опубликованных рецептов</h3>
 {% endif %}
 <br>
-<h2>Ваши комментарии: </h2>
-{% for comm in users_comments %}
-    <p>Комментарий к рецепту: <a href="{{comm.recipe.get_absolute_url}}">{{comm.recipe}}</a></p>
-    <p>{{comm.content|linebreaks|truncatewords:15}}</p>
-{% endfor %}
 
+<!-- Комментарии пользователя -->
+<section aria-label="Ваши комментарии">
+    <h2>Ваши комментарии: </h2>
+    {% if users_comments %}
+        {% for comm in users_comments %}
+            <p>Комментарий к рецепту: <a href="{{comm.recipe.get_absolute_url}}">{{comm.recipe}}</a></p>
+            <p>{{comm.content|linebreaks|truncatewords:15}}</p>
+        {% endfor %}
+    {% else %}
+        <p>У вас нет комментариев.</p>
+    {% endif %}
+</section>
+<hr>
+<!-- Смена пароля -->
+<p><a href="{% url 'users:password-change' %}">Сменить пароль?</a></p>
 {% endblock %}

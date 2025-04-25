@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<section aria-label="Авторизация">
 <h1>Авторизация</h1>
 <form method="post">
     {% csrf_token %}
@@ -11,4 +12,5 @@
         {% endfor %}
         <p><button type="submit">Войти</button></p>
 </form>
+</section>
 {% endblock %}
