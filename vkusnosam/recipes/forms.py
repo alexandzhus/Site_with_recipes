@@ -1,13 +1,14 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from recipes.models import Recipe, Comment, Rating
+from recipes.models import Recipe, Comment, Rating, RecipeStepPreparing
+
 
 def validate_text_format(value):
     """
     Пользовательский валидатор.
-    Проверяет, что данные внесены правильно.
-    В поле были введены данные через пробел и заканчиваются точкой с запятой.
+    Проверяет, что данные внесены правильно:
+    в поле были введены данные через пробел и заканчиваются точкой с запятой.
     :param value:
     :return:
     """
@@ -31,9 +32,11 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = ['name', 'image', 'description', 'products', 'number_servings',
-                  'time_preparing', 'tags_category','calorie', 'steps_description']
+                  'time_preparing', 'tags_category', 'calorie']
         labels = {
             'tags_category': 'Выберите к какому типа блюда относится рецепт',
+            'time_preparing': 'Время приготовления (мин. )',
+            'calorie': 'Калорийность (на одну порцию )',
         }
         validators = {
             'products': [validate_text_format],
@@ -123,3 +126,17 @@ class RatingForm(forms.ModelForm):
         labels = {
             'score': 'Оценка'
         }
+
+
+class RecipeStepPreparingForm(forms.ModelForm):
+    """
+    Форма для добавления шагов приготовления рецепта
+    """
+
+    class Meta:
+        model = RecipeStepPreparing
+        fields = ['step_image', 'step_description']
+        widgets = {
+        'step_description' : forms.Textarea(attrs={'cols': 30, 'rows': 5}),
+        }
+
