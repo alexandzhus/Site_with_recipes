@@ -6,12 +6,12 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
-from users.forms import UserLoginForm, UserRegisterForm, Profile
+from users.forms import UserLoginForm, UserRegisterForm, Profile, UserPasswordChangeForm
 
 from recipes.models import Recipe, Comment
 
@@ -24,6 +24,7 @@ class CustomLoginView(LoginView):
     template_name = 'users/login_form.html'
     extra_context = {'title': 'Авторизация'}
     success_url = 'home'
+
 
     def get_success_url(self) -> str:
         """
@@ -113,9 +114,22 @@ class ProfileView(UpdateView):
     def form_invalid(self, form: any) -> str:
         """
         Выводит сообщение об ошибке если форма не валидна.
-        :param form: form
+        :param form: Any
         :return: str
         """
         response = super().form_invalid(form)
         messages.error(self.request, _("Ошибка! Попробуйте еще раз!"))
         return super().form_invalid(form)
+
+
+class UserPasswordChangeView(PasswordChangeView):
+    """
+    Представление для смены старого пароля на новый
+    """
+    form_class = UserPasswordChangeForm
+    template_name = 'users/password/password-change-form.html'
+    success_url = reverse_lazy('users:password-change-done')
+    extra_context = {
+        'title': "Смена пароля"
+    }
+
