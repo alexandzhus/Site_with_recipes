@@ -115,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-Ru'
 
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
@@ -125,7 +126,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # STATICFILES_DIRS = [BASE_DIR / 'static']
 
@@ -145,7 +146,7 @@ LOGIN_REDIRECT_URL = 'home'  # Явный путь при успешном вх�
 
 LOGOUT_REDIRECT_URL = 'users:login'  # путь при успешном выходе с сайта
 
-
+# Сообщения
 MESSAGE_TAGS = {
     message_constants.DEBUG: 'debug',
     message_constants.INFO: 'info',
@@ -154,7 +155,7 @@ MESSAGE_TAGS = {
     message_constants.ERROR: 'error',
 }
 
-
+# Логирование
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -186,4 +187,6 @@ LOGGING = {
     },
 }
 
+# Email
 
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
