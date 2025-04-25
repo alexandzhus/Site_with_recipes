@@ -24,7 +24,7 @@ def rating_recipes_list() -> QuerySet :
     :return: QuerySet
     """
     queryset = Recipe.objects.all().annotate(average_rating=Coalesce(Avg('ratings__score'), Value(0.0)))
-    rating_list = queryset.filter(average_rating__gte=4)[:4]
+    rating_list = queryset.filter(average_rating__gte=4).order_by('-average_rating')[:4]
     return rating_list
 
 
@@ -42,6 +42,7 @@ def viewing_quantity_recipes() -> QuerySet :
 @register.filter
 def remove_brackets(text) -> str:
     """
+    Пользовательский фильтр.
     Удаляет текст в скобках из строки.
     :return: Str
     """
