@@ -15,8 +15,8 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView, C
 from django.views.generic.edit import FormMixin
 from taggit.models import Tag
 
-from .forms import RecipeForm, CommentForm, SearchSortForm, RatingForm, RatingSortForm
-from .models import Recipe, RecipePhotos, Comment, Rating, TagsCategory
+from .forms import RecipeForm, CommentForm, SearchSortForm, RatingForm, RatingSortForm, RecipeStepPreparingForm
+from .models import Recipe, Comment, Rating, TagsCategory, RecipeStepPreparing
 
 logger = logging.getLogger(__name__)  # Экземпляр logging, который мы можем использовать.
 
@@ -109,7 +109,6 @@ class TagCloudByCategoryView(ListView):
             for tag in tags:
                 # Нормализуем вес тега (например, от 1 до 5)
                 tag.weight = int((tag.num_times / max_count) * 5) if max_count > 0 else 1
-        print(tags)
         return tags
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict:
@@ -185,20 +184,22 @@ class RecipeDetail(FormMixin, DetailView):
         """
         Метод для получения связанных данных и передачи контекста в представление.
         Получает все картинки и комментарии, связанные с рецептом. Также форму для
-        комментариев.
+        комментариев и объект модели RecipeStepPreparing.
         :param kwargs:
         :return: Dict
         """
         context = super().get_context_data(**kwargs)
         recipe = self.get_object()
-        recipe_photos = RecipePhotos.objects.filter(recipe_id=recipe)
+        # recipe_photos = RecipePhotos.objects.filter(recipe_id=recipe)
         comments = recipe.comments.all()
         comments_form = self.get_form()
-        context['recipe_photos'] = recipe_photos
+        # context['recipe_photos'] = recipe_photos
+        recipe_step_preparing = RecipeStepPreparing.objects.filter(recipe_id=recipe)
         context['title'] = f"Детальная информация о рецепте {recipe.slug}"
         context['comments'] = comments
         context['comments_form'] = comments_form
         context['rating_form'] = RatingForm()
+        context['recipe_step_preparing'] = recipe_step_preparing
         return context
 
 
@@ -210,7 +211,7 @@ class RecipeDetail(FormMixin, DetailView):
         :return:
         """
         recipe = get_object_or_404(Recipe, slug=self.kwargs[self.slug_url_kwarg])
-
+        recipe.increment_views()
         return recipe
 
     def post(self, request, *args, **kwargs):
@@ -253,18 +254,37 @@ class CreateRecipe(LoginRequiredMixin, CreateView):
         'title': 'Создание нового рецепта!'
     }
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipe_step_preparing_form'] = RecipeStepPreparingForm()
+        return context
+
+
     def form_valid(self, form):
         """
         Функция проверки на валидность. После чего происходит объект записи без занесения в базу данных(commit=False),
         привязка пользователя к форме и сохранение в БД при помощи возвращения
-        самой себя через метод super()
+        самой себя через метод super().
+        Обрабатывает две формы RecipeForm и RecipeStepPreparingForm.
+        Из RecipeStepPreparingForm берет данные и создает список после чего создается объекты RecipeStepPreparing в БД.
         :param form:
         :return:
         """
         recipe = form.save(commit=False)
         recipe.user = self.request.user   #   user хранить имя текущего пользователя создающего статью
-        return super().form_valid(form)
+        recipe.save()
 
+        step_descriptions = self.request.POST.getlist('step_description')
+        step_images = self.request.FILES.getlist('step_image')
+
+        if step_descriptions or step_images:
+            for step_description, step_image in zip(step_descriptions, step_images):
+                RecipeStepPreparing.objects.create(recipe=recipe, users=self.request.user,
+                                                   step_image=step_image, step_description=step_description)
+
+                print(step_image, step_description )
+
+        return super().form_valid(form)
 
 
 class UpdateRecipe(UserPassesTestMixin, UpdateView):
@@ -300,9 +320,33 @@ class UpdateRecipe(UserPassesTestMixin, UpdateView):
         """
         recipe = self.get_object()
         context = super().get_context_data(**kwargs)
+        context['recipe_step_preparing_form'] = RecipeStepPreparingForm()
         context['title'] = f'Обновление рецепта {recipe.slug}'
         return context
 
+    def form_valid(self, form):
+        """
+        Функция проверки на валидность. После чего происходит объект записи без занесения в базу данных(commit=False),
+        привязка пользователя к форме и сохранение в БД при помощи возвращения
+        самой себя через метод super().
+        Обрабатывает форму RecipeStepPreparingForm.
+        Из RecipeStepPreparingForm берет данные и создает список после чего создается объекты RecipeStepPreparing в БД.
+        :param form:
+        :return:
+        """
+        recipe = form.save(commit=False)
+        recipe.user = self.request.user  # user хранить имя текущего пользователя создающего статью
+        recipe.save()
+
+        step_descriptions = self.request.POST.getlist('step_description')
+        step_images = self.request.FILES.getlist('step_image')
+
+        if step_descriptions or step_images:
+            for step_description, step_image in zip(step_descriptions, step_images):
+                RecipeStepPreparing.objects.create(recipe=recipe, users=self.request.user,
+                                                   step_image=step_image, step_description=step_description)
+
+        return super().form_valid(form)
 
 
 
