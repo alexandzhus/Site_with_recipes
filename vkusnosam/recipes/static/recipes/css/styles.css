@@ -16,6 +16,179 @@ body {
     width: 1450px;
     height: 1040px;
     background-blend-mode: normal;
+    position: relative;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('../images/main-back.jpeg');
+    background-size: 100%;
+    opacity: 1;
+
+}
+
+
+/*Стиля для шапки сайта*/
+
+.page-header {
+  background: #c2c4d1;
+  background-blend-mode: normal;
+  box-sizing: border-box;
+  border: 2px solid rgba(221, 156, 231, 0.5);
+  width: 1450px;
+  height: 115px;
+  border-radius: 10px;
+}
+
+
+.site-name {
+    position: absolute;
+    left: 450px;
+    width: 531px;
+    height: 48px;
+    font-family: Allison;
+    font-size: 49px;
+    font-weight: 400;
+    line-height: 44px;
+    text-align: center;
+    letter-spacing: 11px;
+    display: flex;
+    align-items: center;
+    top: 0px;
+}
+
+.deviz {
+    position: absolute;
+    width: 185px;
+    height: 26px;
+    font-family: Arima;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 26px;
+    text-align: center;
+    letter-spacing: 2.8px;
+    left: 490px;
+    top: 50px;
+
+}
+
+
+.nav-block {
+    position: absolute;
+    left: 1300px;
+    top: 3px;
+    bottom: 10px;
+}
+
+[data-tooltip] {
+    position: relative; /* Относительное позиционирование */
+}
+
+[data-tooltip]::after {
+    content: attr(data-tooltip); /* Выводим текст */
+    position: absolute; /* Абсолютное позиционирование */
+    width: 200px; /* Ширина подсказки */
+    top: 0; /* Положение подсказки */
+    background: #3989c9; /* Синий цвет фона */
+    color: #fff; /* Цвет текста */
+    padding: 0.5em; /* Поля вокруг текста */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Параметры тени */
+    pointer-events: none; /* Подсказка */
+    opacity: 0; /* Подсказка невидима */
+    transition: 1s; /* Время появления подсказки */
+}
+[data-tooltip]:hover::after {
+    opacity: 1; /* Показываем подсказку */
+    top: 0; /* Положение подсказки */
+}
+
+.exit {
+    display: inline-flex;
+    text-decoration: none;
+    position: relative;
+    font-size: 10px;
+    line-height: 10px;
+    padding: 6px 15px;
+    color: black;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: 'Roboto', Тahoma, sans-serif;
+    background: #337AB7;
+    cursor: pointer;
+    border: 2px solid #BFE2FF;
+    outline: 1px solid;
+    outline-color: #337AB7;
+    outline-offset: 0px;
+    text-shadow: none;
+    transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+    margin-bottom: 10px;
+}
+
+.exit:hover,.exit:active,.exit:focus {
+    box-shadow: inset 0 0 20px #BFE2FF;
+    outline-color: rgba(255, 255, 255, 0);
+    outline-offset: 15px;
+    color: #FFF;
+}
+
+.add-recipe {
+    transform: rotate(45deg);
+    text-align: center;
+    width: 80%; /* чтобы текст не прижимался к краям */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 2em;
+
+}
+
+.add-recipe-not-authenticated {
+    transform: rotate(45deg);
+    text-align: center;
+    width: 80%; /* чтобы текст не прижимался к краям */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: auto;
+}
+
+.add-recipe-figure {
+    position: absolute;
+    top: 170px;
+    width: 11em;
+    height: 11em;
+    background: Chocolate;
+    border-radius: 50% 0 50% 50%;
+    transform: rotate(-45deg);
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-recipe-figure:hover {
+    box-shadow: 0 4px 8px rgba(255, 105, 180, 0.9);
+}
+
+.add-recipe-figure-not-authenticated {
+    position: absolute;
+    top: 170px;
+    width: 11em;
+    height: 11em;
+    background: Chocolate;
+    border-radius: 50% 0 50% 50%;
+    transform: rotate(-45deg);
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-recipe-url {
+    color: gold;
+    text-decoration: none;
+}
+
+
+.logo {
+    width: 100px;
+    height: 110px;
+    border-radius: 10px;
+
 }
 
 /* Основные стили для секции с рецептами */
@@ -43,6 +216,8 @@ section[aria-label="Список рецептов"] h2 {
 .recipe-card {
     border: 5px solid #e0e0e0;
     border-radius: 8px;
+    min-height: 350px;
+    height: auto;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #fff;
@@ -51,11 +226,18 @@ section[aria-label="Список рецептов"] h2 {
     transition: box-shadow 0.3s ease;
 }
 
-.recipe-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.recipe-card-img-and-desc {
+    display: flex; /* Добавляем flex для внутреннего расположения */
+    gap: 10px; /* Расстояние между картинкой и описанием */
+    margin-bottom: 10px;
 }
 
-/* Остальные стили для карточки (как в предыдущем примере) */
+
+.recipe-card:hover {
+    box-shadow: 0 4px 8px rgba(60, 179, 113, 0.9);
+}
+
+
 .recipe-card h3 {
     font-size: 22px;
     margin: 0 0 10px;
@@ -76,20 +258,41 @@ section[aria-label="Список рецептов"] h2 {
     margin: 5px 0;
 }
 
+.rating {
+    position: relative;
+    top: -40px;
+    left: 850px;
+}
+
+.recipe-description {
+    flex: 1; /* Занимает все оставшееся пространство */
+    display: block;
+    padding: 10px;
+    overflow-y: auto; /* Добавляем прокрутку если описание слишком длинное */
+    max-height: 100%; /* Ограничиваем по высоте карточки */
+}
+
+.recipe-comm {
+    position: relative;
+    left: 750px;
+}
+
 #average-rating {
     font-weight: bold;
     color: #ff9800;
 }
 
 .recipe-card figure {
-    margin: 10px 0;
-    text-align: center;
+    margin: 0;
+    flex: 0 0 300px; /* Фиксированная ширина для картинки */
+    align-self: flex-start; /* Чтобы картинка не растягивалась */
 }
 
-.recipe-card img {
-    width: 300px;
+.recipe-card figure img {
+    width: 100%;
     height: auto;
     border-radius: 8px;
+    object-fit: cover; /* Чтобы изображение заполняло контейнер */
 }
 
 .recipe-card p:has(span) {
@@ -103,7 +306,7 @@ section[aria-label="Список рецептов"] h2 {
 }
 
 .recipe-card a[href*="#comments"] {
-    color: #28a745;
+    color: DarkSlateGray;
     text-decoration: none;
 }
 
@@ -128,67 +331,1092 @@ section[aria-label="Список рецептов"] h2 {
     text-decoration: underline;
 }
 
+/* Секция для стилей детальной информации о рецепте */
 
-.page-header {
-  background: #c2c4d1;
-  background-blend-mode: normal;
-  box-sizing: border-box;
-  border: 2px solid rgba(221, 156, 231, 0.5);
+.date-user {
+    display: inline;
+
 }
 
 
-.site-name {
-  left: 302px;
-  top: 20px;
-  width: 531px;
-  height: 48px;
-  font-family: Allison;
-  font-size: 49px;
-  font-weight: 400;
-  line-height: 44px;
-  text-align: center;
-  letter-spacing: 11px;
-  display: flex;
-  align-items: center;
-}
-
-.deviz {
-  left: 460px;
-  top: 71px;
-  width: 185px;
-  height: 26px;
-  font-family: Arima;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 26px;
-  text-align: center;
-  letter-spacing: 2.8px;
+section[aria-label="Рейтинг рецепта"] {
+    position: relative;
+    left: 880px;
+    bottom: -70px;
 }
 
 
-.login{
-  float: right;
+section[aria-label="Поставить оценку рецепту(от 1 до 5)"] {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.has-rate {
+    font-weight: bold;
+    color: #4CAF50;
+    display: block;
+    margin: 10px 0;
+}
+
+.rating-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.rating-form button[type="submit"] {
+    align-self: flex-start;
+    padding: 8px 20px;
+    background: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.rating-form button[type="submit"]:hover {
+    background-color: #8B008B;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+
+}
+
+article[aria-label="Детальная информация о рецепте"] {
+    padding: 20px;
+
+}
+
+.recipe-detail-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+
+.recipe-detail-card {
+    height: auto;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.recipe-name {
+    position: relative;
+    font-size: 30px;
+}
+
+
+.recipe-detail-img {
+    width: 500px;
+    height: auto;
+    border-radius: 8px;
+    align-self: flex-start;
+    position: relative;
+}
+
+
+.recipe-card-detail-img-and-description {
+    display: flex;          /* Включаем flex-контейнер */
+    align-items: flex-start; /* Выравниваем элементы по верхнему краю */
+    gap: 20px;             /* Отступ между картинкой и текстом */
+    width: 100%;           /* Занимает всю доступную ширину */
+    max-width: 100%;       /* Ограничение по максимальной ширине */
+
+}
+
+.recipe-detail-image {
+    flex: 0 0 auto;        /* Картинка не растягивается и не сжимается */
+    max-width: 350px;       /* Максимальная ширина картинки */
+    border: 2px solid rgba(30, 144, 255, 0.2);
+}
+
+.recipe-description {
+    flex: 1;              /* Текст занимает всё оставшееся пространство */
+    min-width: 0;         /* Фикс для длинных слов */
+}
+
+.recipe-product {
+    margin: 0 auto;
+    max-width: 45%;
+    background: rgba(173, 255, 47, 0.5)
+}
+
+.recipe-step-preparing {
+    margin: 0 auto;
+    max-width: 60%;
+    background: rgba(238, 232, 170, 0.5)
+}
+
+.recipe-step-preparing h3 {
+    text-align: center;
+}
+
+.step {
+    text-align: center;
+}
+
+.recipe-step-img-and-description {
+    display: flex;          /* Включаем flex-контейнер */
+    align-items: flex-start; /* Выравниваем элементы по верхнему краю */
+    gap: 20px;             /* Отступ между картинкой и текстом */
+    width: 100%;           /* Занимает всю доступную ширину */
+    max-width: 100%;       /* Ограничение по максимальной ширине */
+
+}
+
+.recipe-step-image {
+    flex: 0 0 auto;        /* Картинка не растягивается и не сжимается */
+    max-width: 150px;       /* Максимальная ширина картинки */
+    border: 2px solid rgba(30, 144, 255, 0.2);
+}
+
+.recipe-step-description {
+    flex: 1;              /* Текст занимает всё оставшееся пространство */
+    min-width: 0;         /* Фикс для длинных слов */
+}
+
+#comments h3 {
+    text-align: center;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+}
+
+
+.comm-autor-img-and-content {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  max-width: 45%
+}
+
+.user-image {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 70%;
+    object-fit: cover;
+}
+
+.comm-autor {
+    font-weight: bold;
+    color: #333;
+}
+
+.comment-date {
+    color: #999;
+    font-size: 0.9em;
+}
+
+.comm-content {
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.add-comm {
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+.submit-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+/* Секция со стилями для рецептов по тегам */
+
+.recipes-tags {
+    width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.recipes-tags  h2 {
+    color: #2c3e50;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f1f1f1;
+    text-align: center;
+}
+
+.recipes-tags ul {
+    list-style: none;
+    display: grid;
+    gap: 12px;
+}
+
+.recipes-tags li {
+    padding: 15px;
+    background: #FFF8DC;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+.recipes-tags li:hover {
+    background: #D2B48C;
+    transform: translateX(5px);
+}
+
+.recipes-tags li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+.recipes-tags li a::before {
+    content: "→";
+    margin-right: 10px;
+    color: #4CAF50;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.recipes-tags li:hover a::before {
+    transform: translateX(5px);
+}
+
+.back {
+    max-width: 800px;
+    margin-top: 20px;
+}
+
+.back a {
+    display: inline-block;
+    padding: 10px 25px;
+    background: #DCDCDC;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    color: black;
+}
+.back a:before {
+    content: "←";
+    margin-right: 5px;
+    color: #228B22;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+    font-size: 20px
+}
+
+.back a:hover {
+    background: #A9A9A9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    color: black;
+}
+
+.back a:active {
+    transform: translateY(0);
+}
+
+/* Секция для добавления нового рецепта*/
+
+.recipe-add {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+#add-recipe-form {
+    height: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+}
+
+#add-recipe-form p {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.recipe-add label {
+    flex: 0 0 300px;
+    padding-right: 10px;
+    text-align: left;
+    font-weight: bold;
 }
 
 
 
+#add-recipe-form input[type="text"],
+#add-recipe-form input[type="file"],
+#add-recipe-form input[type="number"],
+#add-recipe-form textarea,
+#add-recipe-form select {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 127, 80, 0.5);
+    border-radius: 4px;
+    box-shadow: 0 0px 8px rgba(255, 127, 80, 0.5);
+}
+
+#add-recipe-form input[type="text"]:focus,
+#add-recipe-form input[type="file"]:focus,
+#add-recipe-form input[type="number"]:focus,
+#add-recipe-form textarea:focus,
+#add-recipe-form select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+#add-recipe-form textarea {
+    min-height: 60px;
+    resize: vertical;
+    height: 60px;
+}
+
+.add-form-button-save {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto; /* Автоматический отступ слева */
+    display: flex;
+}
+
+#addStep {
+    padding: 10px 20px;
+    background-color: rgba(70, 130, 180);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#addStep:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.dynamic-step-button {
+    padding: 10px 20px;
+    background-color: rgba(70, 130, 180);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.step_preparing {
+font-size: 20px;
+    min-width: 120px;
+    text-align: left;
+    color: rgb(75, 0, 130);
+
+}
+
+#add-recipe-form h3 {
+    text-align: center;
+}
+
+.create-recipe-nav {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+
+}
+
+.create-recipe-nav a {
+    padding: 8px 20px;
+    text-decoration: none;
+    color: #0000CD;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.create-recipe-nav a:hover {
+    background-color: #eaf4fe;
+}
+
+.create-recipe-nav a[href*="home"] {
+    border: 1px solid #3498db;
+    color: #3498db;
+}
+
+.create-recipe-nav a[href*="home"]:hover {
+    background-color: #eaf4fe;
+}
+
+/* Стили для профиля пользователя*/
+
+.profile {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding 20px
+}
+
+.profile-form input[type='text'],
+.profile-form input[type='file'],
+.profile-form input[type='number'],
+.profile-form textarea,
+.profile-form select {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 127, 80, 0.5);
+    border-radius: 4px;
+    box-shadow: 0 0px 8px rgba(255, 127, 80, 0.5);
+}
+
+.profile-form input[type='text']:focus,
+.profile-form input[type='file']:focus,
+.profile-form input[type='number']:focus,
+.profile-form textarea:focus,
+.profile-form select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+.profile-form-button-save {
+    padding: 10px 20px;
+    background-color: #8FBC8F;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto; /* Автоматический отступ слева */
+    display: flex;
+}
+
+section[aria-label='Профиль пользователя'] {
+    height: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+}
+
+section[aria-label="Список ваших рецептов"] {
+    height: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+
+}
+
+
+section[aria-label="Список ваших рецептов"] ul {
+    width: 350px;
+    max-width: 500px;
+    display: grid;
+    gap: 20px;
+}
+
+
+section[aria-label="Список ваших рецептов"] li {
+    display: flex;
+    background: rgba(255, 140, 0, 0.5);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+
+section[aria-label="Список ваших рецептов"] li:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+section[aria-label="Список ваших рецептов"] li > a:first-child {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    padding-right: 15px;
+}
+
+section[aria-label="Список ваших рецептов"] figure {
+    margin: 0;
+    display: flex;
+}
+
+section[aria-label="Список ваших рецептов"] img {
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+section[aria-label="Список ваших рецептов"] h3 {
+    color: #666;
+    font-weight: normal;
+    text-align: center;
+    padding: 40px 0;
+}
+
+section[aria-label="Список ваших рецептов"] h2 {
+    color: #666;
+    font-weight: normal;
+    text-align: center;
+
+}
+
+section[aria-label="Ваши комментарии"] {
+    height: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 20px;
+}
+
+section[aria-label="Ваши комментарии"] h2 {
+    color: #666;
+    font-weight: normal;
+    text-align: center;
+}
+
+.comment {
+    background-color: rgba(244, 164, 96, 0.5);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: box-shadow 0.3s ease;
+
+}
+
+.comment:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+}
+
+.change-password a {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #0000CD;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: none;
+    cursor: pointer;
+}
+
+.change-password a:hover {
+    background-color: #DC143C;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.change-password a:active {
+    transform: translateY(0);
+}
+
+
+/* Секция стилей для обновления рецепта*/
+
+.update-recipe {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+#update-recipe-form {
+    padding: 20px;
+    height: auto;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#update-recipe-form p {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.update-recipe label {
+    flex: 0 0 300px;
+    padding-right: 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+#update-recipe-form  input[type="text"],
+#update-recipe-form  input[type="file"],
+#update-recipe-form  input[type="number"],
+#update-recipe-form  textarea,
+#update-recipe-form  select {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 127, 80, 0.5);
+    border-radius: 4px;
+    box-shadow: 0 0px 8px rgba(255, 127, 80, 0.5);
+}
+
+#update-recipe-form  input[type="text"]:focus,
+#update-recipe-form  input[type="file"]:focus,
+#update-recipe-form  input[type="number"]:focus,
+#update-recipe-form  textarea:focus,
+#update-recipe-form  select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+#update-recipe-form  textarea {
+    min-height: auto;
+    height: auto;
+}
+
+
+.current-image {
+    margin-bottom: 20px;
+}
+
+.current-image img {
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.current-image-info {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.replace-image {
+    display: inline-block;
+    margin-left: 40px;
+    color: #CD5C5C;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 20px;
+    border: 2px dashed #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+    width: 35%;
+    max-width: 100px;
+    padding: 3px;
+}
+
+.replace-image:hover {
+    border-color: #7B68EE;
+    background: #f0fff0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+.image-upload {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+.update-recipe-button-save {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto; /* Автоматический отступ слева */
+    display: flex;
+}
+
+.update-recipe-button-save:hover {
+    background-color: #00FF00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+.nav-block-update-recipe {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.nav-block-update-recipe a {
+    padding: 8px 20px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-block-update-recipe a:hover {
+    background-color: #f5f5f5;
+
+}
+
+
+.nav-block-update-recipe a[href*="delete"] {
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+}
+
+.nav-block-update-recipe a[href*="delete"]:hover {
+    background-color: #fdeaea;
+}
+
+.nav-block-update-recipe a:not([href*="delete"]) {
+    border: 1px solid #3498db;
+    color: #3498db;
+}
+
+.nav-block-update-recipe a:not([href*="delete"]):hover {
+    background-color: #eaf4fe;
+}
+
+
+/* Стили для шаблона регистрация */
+
+section[aria-label="Регистрация"] {
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.register-form {
+    padding: 20px;
+    height: auto;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.register-form  p {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+
+
+.register-form  input[type="text"],
+.register-form  input[type="email"],
+.register-form  input[type="password"] {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 127, 80, 0.5);
+    border-radius: 4px;
+    box-shadow: 0 0px 8px rgba(255, 127, 80, 0.5);
+}
+
+.register-form input[type="text"]:focus,
+ .register-form input[type="email"]:focus,
+ .register-form input[type="password"]:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+.register-form input::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.register-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto; /* Автоматический отступ слева */
+
+}
+
+.register-button:hover {
+    background-color: #00FF00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Стиль для страницы доступ запрещен*/
+
+.access-denied {
+    margin: 0 auto;
+    width: 1000px;
+    padding: 20px;
+    height: auto;
+    background-color: #fff;
+}
+
+/* Стили для шаблона автоизации*/
+
+section[aria-label="Авторизация"] {
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.login-form {
+    padding: 20px;
+    height: auto;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-form p {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid rgba(0, 206, 209, 0.5);
+    border-radius: 4px;
+    box-shadow: 0 0px 8px rgba(255, 127, 80, 0.5);
+}
+
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+    border-color: #8B008B;
+    box-shadow: 0 0 0 2px rgba(255, 228, 225, 0.2);
+    outline: none;
+}
+
+.login-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto; /* Автоматический отступ слева */
+}
+
+
+.login-button:hover {
+    background-color: #4682B4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+/* Секция для стилей удаления рецепта*/
+
+.delete-recipe {
+    margin: 0 auto;
+    padding: 20px;
+    width: 1000px;
+    background-color: white;
+}
+
+.delete-recipe-button {
+    padding: 10px 20px;
+    background-color: #778899;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto; /* Автоматический отступ слева */
+
+}
+
+.delete-recipe-button:hover {
+    background-color: #DC143C;
+    transform: translateY(-2px);
+}
+
+.no_delete_button {
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.no_delete_button a {
+    text-decoration: none;
+    color: #333;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    border: 1px solid rgba(85, 107, 47, 0.5);
+    padding: 5px;
+    background-color: #f5f5f5;
+}
+
+.no_delete_button a:hover {
+    background-color: #00FF7F;
+}
+
+
+/*стили для шаблона поиска рецептов по категориям*/
+
+.category-recipes {
+    margin: 0 auto;
+    width: 1000px;
+    background-color: #FFFFFF;
+    padding: 20px;
+}
+
+.category-recipes nav {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.category-recipes nav strong {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.category-recipes nav a {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #3498db;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    border-bottom: 1px solid ;
+}
+
+.category-recipes nav a:hover {
+    background: #f0f7fd;
+    text-decoration: underline;
+    transform: translateY(-2px);
+}
+
+section[aria-label="Облако тегов"] {
+    margin-top: 20px;
+}
+
+.category-recipes h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+.category-recipes h3 {
+    color: #7f8c8d;
+    font-weight: normal;
+    text-align: center;
+}
+
+section[aria-label="Облако тегов"] a {
+    display: inline-block;
+    margin: 5px;
+    padding: 6px 12px;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-family: Arial, sans-serif;
+}
+
+section[aria-label="Облако тегов"] a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 228, 225, 0.5);
+}
+
+.tag-1 { font-size: 0.8em; background: #e0f2f1; color: #00695c; }
+.tag-2 { font-size: 0.9em; background: #b2dfdb; color: #00796b; }
+.tag-3 { font-size: 1.0em; background: #80cbc4; color: #00897b; }
+.tag-4 { font-size: 1.1em; background: #4db6ac; color: #009688; }
+.tag-5 { font-size: 1.2em; background: #26a69a; color: #ffffff; }
+
+
+
+
+/* Стили для сайдбаров*/
+aside h2 {
+    font-size: 20px;
+    color: DarkSlateBlue;
+    margin-bottom: 20px;
+    text-align: center;
+}
 
 .sidebar-left {
-background-color: orange;
+    background-color: DarkGoldenRod;
     float: left;
-    margin: 0 1.5%;
-    width: 10%;
-    margin-top: 10px;
+    border-radius: 10px;
+    width: 13%;
+    height: auto;
+    margin-top: 300px;
 }
 
 .sidebar-right {
-background-color: orange;
+    background-color: DarkGoldenRod;
     float: right;
-    margin: 0 1.5%;
-    width: 10%;
-    margin-top: 10px;
+    border-radius: 10px;
+    height: auto;
+    width: 13%;
+    margin-top: 300px;
+}
 
+.aside-recipe-grid {
+    display: flex;
+    flex-wrap: wrap;
 
+}
+
+.aside-recipe-card {
+    border: 2px solid rgb(128, 0, 0);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(233, 150, 122, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.aside-recipe-card:hover {
+    box-shadow: 10px 40px 80px rgba(233, 150, 122, 0.7);
+}
+
+.sidebar-recipe-name {
+    padding: 5px;
+}
+
+.sidebar-recipe-image {
+    position: relative;
+    padding: 5px;
+    bottom: 15px;
 }
 
 /*Секция поиска и сортировки*/
@@ -196,8 +1424,11 @@ background-color: orange;
 .search-and-sort-section {
     position: relative;
     left: 200px;
-    background: yellow;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url('../images/search-and-filter.jpeg');
+    background-repeat: no-repeat;
     width: 1057px;
+    background-size: cover;
     height: 200px;
 }
 
@@ -207,25 +1438,21 @@ background-color: orange;
 }
 
 .filters {
+    padding: 5px;
+    position: absolute;
+    bottom: 10px;
+}
+
+
+.search-for-cat {
     position: relative;
-    bottom: 100px;
+    top: 60px;
+    left: 200px;
 }
 
-/*Конец секции поиска и сортировки*/
 
-/*.content {
-    float: center;
 
-    padding: 5px 10px 5px 10px;
-    box-sizing: border-box;
-    background: #c2c4d1;
-    border: 2px solid rgba(221, 156, 231, 0.5);
-}
-*/
-footer {
-  border: 2px solid rgba(221, 156, 231, 0.5);
-}
-
+/* Секция стили форм */
 .form-input {
     width: 300px;
     font-size: 16px;
@@ -248,22 +1475,8 @@ footer {
     font-size: 16px;
 }
 
-.rating-stars {
-    unicode-bidi: bidi-override;
-    direction: rtl;
-    font-size: 2em;
-}
-.rating-stars .star {
-    display: inline-block;
-    cursor: pointer;
-    color: #ddd;
-}
-.rating-stars .star:hover,
-.rating-stars .star.active {
-    color: gold;
-}
 
-
+/* Блок стилей для навигации по страницам*/
 .list-pages {
 	text-align: center;
 	margin: 0 0 20px 0;
@@ -297,4 +1510,26 @@ footer {
 	border: none;
 	color: #000;
 	font-size: 20px;
+}
+
+
+/* Секция Подвала*/
+footer {
+    display: flex;
+    border: 2px solid rgba(221, 156, 231, 0.5);
+    width: 100%;
+    bottom: 0px;
+}
+
+
+/* Заданные параметры для тега figure */
+figure {
+    margin: 0; /* убирает внешние отступы */
+    padding: 0; /* убирает внутренние отступы */
+    display: inline-block; /* если нужно обтекание текстом */
+}
+
+figure img {
+    display: block; /* убирает лишний отступ снизу */
+    max-width: 100%; /* делает изображение адаптивным */
 }
