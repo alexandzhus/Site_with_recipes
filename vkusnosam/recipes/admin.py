@@ -42,7 +42,7 @@ class RecipeAdmin(admin.ModelAdmin):
     Клас для отображения модели Recipe в админке
     """
     fields = ['name', 'slug', 'views', 'image', 'description', 'products',
-              'user', 'tags_category', 'number_servings', 'time_preparing',
+              'user', 'tags_category', 'tags', 'number_servings', 'time_preparing',
               'calorie']
     list_display = ['id', 'name', 'views', 'slug', 'product_image', 'brief_description',
               'user', 'tag_list', 'number_servings', 'time_preparing',
