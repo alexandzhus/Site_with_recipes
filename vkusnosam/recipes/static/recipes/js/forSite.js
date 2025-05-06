@@ -9,22 +9,24 @@ addStep.addEventListener('click', () => {createOneMoreForm()});
 let newButton = document.createElement('button');
 newButton.setAttribute('id', 'addStepNew');
 newButton.setAttribute('type', 'button');
+newButton.classList.add('dynamic-step-button');
+
 
 function createOneMoreForm() {
         if (addStep) {addStep.remove()}
         stepCounter++;
          // Обновляем текст в элементе
-        const stepElement = document.querySelector('.step_preparing');
-        stepElement.textContent = `Добавление ${stepCounter} шага приготовления: `;
+        const stepElementAddStep = document.querySelector('.step_preparing');
+        stepElementAddStep.textContent = `Добавление ${stepCounter} шага приготовления: `;
         // Находим контейнер для форм
-        var formsContainer = document.getElementById('formsContainer');
+        let formsContainer = document.getElementById('formsContainer');
 
         // Клонируем первую группу полей
-        var originalFormGroup = formsContainer.querySelector('.form-group');
-        var newFormGroup = originalFormGroup.cloneNode(true);
+        let originalFormGroup = formsContainer.querySelector('.form-group');
+        let newFormGroup = originalFormGroup.cloneNode(true);
 
         // Очищаем значения в новых полях
-        var inputs = newFormGroup.querySelectorAll('input, select, textarea');
+        let inputs = newFormGroup.querySelectorAll('input, select, textarea');
         inputs.forEach(function(input) {
             console.log(input.value);
             if (input.type !== 'file') {
