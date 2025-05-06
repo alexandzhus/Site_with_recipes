@@ -2,11 +2,69 @@
 {% load recipe_tags %}
 {% block content %}
 
+{% if user.is_authenticated %}
+    <a href="{% url 'create_recipe' %}">
+    <div class="add-recipe-figure">
+        <p class="add-recipe"> <span class="add-recipe-url">Добавить рецепт!</span></p>
+    </div>
+    </a>
+{% else %}
+    <div class="add-recipe-figure-not-authenticated">
+        <p class="add-recipe-not-authenticated"><span class="add-recipe-url">Войдите, чтобы добавить рецепт!</span></p>
+    </div>
+{% endif %}
+<!--  Sidebar слева  -->
+
+    <aside class="sidebar-left">
+        <h2>Топ блюд по рейтингу </h2>
+    {% rating_recipes_list  as reci %}
+        <div class="aside-recipe-grid">
+            {% for rec in reci %}
+                <article class="aside-recipe-card">
+                <p class="sidebar-recipe-name"><a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
+                <figure>
+                    {% if rec.image %}
+                        <p class="sidebar-recipe-image"><a href="{{ rec.get_absolute_url }}">
+                            <img src="{{rec.image.url}}" width="175px" height="175px" ></a></p>
+                    {% else %}
+                        <p class="sidebar-recipe-image">
+                            <img src="/media/default_images/no_image.jpeg" width="175px" height="175px"></p>
+                    {% endif %}
+                </figure>
+            </article>
+            {% endfor %}
+        </div>
+    </aside>
+<!-- конец левого Sidebar -->
+
+<!--  Sidebar справа  -->
+    <aside class="sidebar-right">
+        <h2>Топ блюд по просмотрам </h2>
+    {% viewing_quantity_recipes  as recip %}
+        <div class="aside-recipe-grid">
+        {% for rec in recip %}
+            <article class="aside-recipe-card">
+                <p class="sidebar-recipe-name"><a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
+                <figure>
+                    {% if rec.image %}
+                        <p class="sidebar-recipe-image"><a href="{{ rec.get_absolute_url }}">
+                            <img src="{{rec.image.url}}" width="175px" height="175px" ></a></p>
+                    {% else %}
+                        <p class="sidebar-recipe-image">
+                            <img src="/media/default_images/no_image.jpeg" width="175px" height="175px"></p>
+                    {% endif %}
+                </figure>
+            </article>
+        {% endfor %}
+        </div>
+    </aside>
+<!-- конец правого Sidebar -->
+
 <!--Секция поиска и сортировки начало-->
 <div class="search-and-sort-section">
 <!-- Кнопки для сортировки и поиск-->
 <section aria-label="Поиск рецептов" class="search">
-    <h2>Поиск рецептов</h2>
+    <h3>Поиск рецептов</h3>
     <form action="{% url 'home' %}" method="get">
         <input name="search" type="text" placeholder="Поиск">
         <button type="submit">Искать</button>
@@ -14,7 +72,7 @@
 </section>
 
 <section aria-label="Фильтры для рецептов" class="filters">
-    <h2>Фильтры</h2>
+
     <form method="get" action="">
         {% csrf_token %}
         <div class="form-error">{{ form.non_field_errors }}</div>
@@ -36,19 +94,20 @@
     </form>
 </section>
 
-<section aria-label="Искать рецепты по категориям и тегам">
+<section aria-label="Искать рецепты по категориям и тегам" class="search-for-cat">
     <h2><a href="{% url 'tag_cloud_by_category' %}">Искать рецепты по категориям</a></h2>
 </section>
 </div>
 <!--Конец секции поиска и сортировки -->
 
 <section aria-label="Список рецептов" >
-    <h2>Список рецептов</h2>
+    <h2>Рецепты</h2>
        <div class="recipe-grid">
         {% for rec in recipes %}
             <article class="recipe-card">
             <h3><a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></h3>
-            <p>рейтинг: <span id="average-rating">{{ rec.average_rating|floatformat:1 }}</span></p>
+            <p class="rating">рейтинг: <span id="average-rating">{{ rec.average_rating|floatformat:1 }}</span></p>
+                <div class="recipe-card-img-and-desc">
             <figure>
                 {% if rec.image %}
                     <a href="{{ rec.get_absolute_url }}">
@@ -58,26 +117,31 @@
                     <img src="/media/default_images/no_image.jpeg" alt="Изображение отсутствует">
                 {% endif %}
             </figure>
-            <p> Используемые продукты:
+                    <span class="recipe-description"><span style="font-weight: 700; font-size: 19px;">
+                        Описание:</span> {{rec.description}}</span>
+                </div>
+            <p class=""><span style="font-weight: 700; font-size: 15px;">Используемые продукты:</span>
                 {% for i in rec.create_list_from_data_field_products %}
-                    {{i|remove_brackets}}{% if not forloop.last %},{% else %}.{% endif %}
+                    {{i|lower|remove_brackets}}{% if not forloop.last %},{% else %}.{% endif %}
                 {% endfor %}
             </p>
-            <p>Пользователь: {{rec.user}}</p>
-            <p>Время приготовления: {{rec.time_preparing }}</p>
-            <p><a href="{{ rec.get_absolute_url }}#comments">Кол-во комментариев({{rec.comments_quantity}})</a></p>
+            <p><span style="font-weight: 700; font-size: 15px;">Пользователь:</span>  {{rec.user}}</p>
+            <p><span style="font-weight: 700; font-size: 15px;">Время приготовления:</span>  {{rec.time_preparing}} минут.</p>
+                <p> <span style="font-weight: 700; font-size: 15px;">Кол-во калорий:</span>  {{ rec.calorie }} ккал.</p>
+            <p class="recipe-comm"><a href="{{ rec.get_absolute_url }}#comments">
+                <span style="font-weight: 700; font-size: 15px;">Кол-во комментариев:</span> ({{rec.comments_quantity}})</a></p>
             </article>
             {% empty %}
                 <p>По вашему запросу ничего не найдено! Попробуйте еще раз!</p>
                 <p><a href="{% url 'home' %}">На главную</a></p>
         {% endfor %}
-    </div>
+        </div>
 </section>
 {% endblock %}
 
 {% block navigation %}
 {% if page_obj.has_other_pages %}
-	<nav class="list-pages" aria-label="Навигация по страницам">>
+	<nav class="list-pages" aria-label="Навигация по страницам">
 		<ul>
 			{% if page_obj.has_previous %}
 			<li class="page-num">

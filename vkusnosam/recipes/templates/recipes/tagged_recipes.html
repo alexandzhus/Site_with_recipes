@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<section aria-label="Рецепты с тегом {{ tag.name }}">
-<h2>Рецепты с тегом: "{{ tag.name }}"</h2>
+<div class="recipes-tags">
+    <section aria-label="Рецепты с тегом {{ tag.name }}">
+    <h2>Рецепты с тегом {{ tag.name }}</h2>
     <ul>
         {% for recipe in recipes %}
             <li><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></li>
         {% endfor %}
     </ul>
-</section>
-<div class="back">
+    </section>
+    <div class="back">
     <a href="{% url 'tag_cloud_by_category' %}">Обратно</a>
+    </div>
 </div>
 {% endblock %}

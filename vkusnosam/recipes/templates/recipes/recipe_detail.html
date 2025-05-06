@@ -2,102 +2,125 @@
 {% load recipe_tags %}
 {% block content %}
 
-<section aria-label="Рейтинг рецепта">
-    <p>Средний рейтинг: <span id="average-rating">{{ recipe.average_rating|floatformat:1 }}</span></p>
-</section>
-<section aria-label="Поставить оценку рецепту(от 1 до 5)">
-{% if user.is_authenticated %}
-    {% user_has_rated user recipe as has_rated %}
-        {% if has_rated %}
-            <h2>Вы уже оценили этот рецепт.</h2>
-        {% else %}
-            <h3>Оценить продукт: {{ recipe.name }}</h3>
-                <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form-error">{{ form.non_field_errors }}</div>
-                        {% for f in rating_form %}
-                            <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
-                            <div class="form-error">{{ f.errors }}</div>
-                        {% endfor %}
-                        <p><button type="submit">Оценить</button></p>
-                </form>
-        {% endif %}
-{% endif %}
-</section>
+<div class="recipe-detail-grid">
+    <section aria-label="Рейтинг рецепта">
+        <p>Рейтинг: <span id="average-rating">{{ recipe.average_rating|floatformat:1 }}</span></p>
+    </section>
+    <section aria-label="Поставить оценку рецепту(от 1 до 5)">
+    {% if user.is_authenticated %}
+        {% user_has_rated user recipe as has_rated %}
+            {% if has_rated %}
+                <span class="has-rate">Вы уже оценили этот рецепт!</span>
+            {% else %}
+                <h3>Оценить</h3>
+                    <form method="post" enctype="multipart/form-data" class="rating-form">
+                            {% csrf_token %}
+                            <div class="form-error">{{ form.non_field_errors }}</div>
+                            {% for f in rating_form %}
+                                <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+                                <div class="form-error">{{ f.errors }}</div>
+                            {% endfor %}
+                            <p><button type="submit">Оценить</button></p>
+                    </form>
+            {% endif %}
+    {% endif %}
+    </section>
 
-<!-- Информация о рецепте -->
-<article>
-    <p>Дата добавления:{{recipe.time_create|date:"d-m-Y H:i:s"}}</p>
-    <p>Автор: {{recipe.user}}</p>
-    <figure>
-        {% if recipe.image %}
-            <p><img src="{{recipe.image.url}}" alt="{{recipe.name}}"></p>
-        {% else %}
-            <p><img src="/media/default_images/no_image.jpeg" alt="изображение отсутствует"></p>
-        {% endif %}
-    </figure>
-    <p>Название: {{recipe.name}}</p>
-    <p>Краткое описание рецепта: {{recipe.description}}</p>
-    <p>Продукты: {{recipe.products|linebreaks}}</p>
-    <p>Количество порций: {{recipe.number_servings}} </p>
-    <p>Время приготовления: {{recipe.time_preparing}}</p>
-    <p>Калорийность: {{recipe.calorie}}</p>
-    <hr>
-    <h3>Пошаговый рецепт {{recipe.name}}</h3>
-    {% for i in recipe_step_preparing %}
-        <section>
-            <p class="step">Шаг {{ forloop.counter }}</p>
-            <p>{{ i.step_description }}</p>
-            <figure>
-                <img src="{{ i.step_image.url }}" width="100" height="150" alt="Шаг {{ forloop.counter }}">
-            </figure>
-        </section>
-        <hr>
-    {% endfor %}
-</article>
-<br>
-<!-- Комментарии -->
-<article>
-    <h3>Комментарии</h3>
-    <div id="comments">
-    {% if comments %}
-        {% for comm in comments %}
-            <article>
-                <figure>
-                    {% if comm.user.avatar %}
-                        <p>Пользователь: <img src="{{ comm.user.avatar.url }}" width="50px;" height="50px;"
-                                              alt="comm.user.name">{{comm.user}}</p>
+    <!-- Информация о рецепте -->
+    <div class="recipe-detail-card">
+        <article aria-label="Детальная информация о рецепте">
+            <p class="recipe-name">{{recipe.name}}</p>
+            <p class="date-user">Дата добавления: {{recipe.time_create|date:"d-m-Y H:i:s"}}</p>
+            <p class="date-user">Автор: {{recipe.user}}</p>
+            <div class="recipe-card-img-and-desc">
+                <figure class="recipe-detail-image">
+                    {% if recipe.image %}
+                        <p><img src="{{recipe.image.url}}" alt="{{recipe.name}}" class="recipe-detail-img"></p>
                     {% else %}
-                        <p>Пользователь: <img src="/media/default_images/no_image.jpeg" width="50px;" height="50px;"
-                                              alt="Нет аватара">{{comm.user}}</p>
+                        <p>
+                            <img src="/media/default_images/no_image.jpeg"
+                                 alt="изображение отсутствует" class="recipe-detail-img">
+                        </p>
                     {% endif %}
                 </figure>
-                <p>Опубликовано: {{comm.time_create}}</p>
-                <p>{{comm.content}}</p>
-            </article>
-        {% endfor %}
-    {% else %}
-        <h4>Пока комментариев нет. Оставьте свой!</h4>
-    {% endif %}
+                <div class="recipe-description">
+                    <p>{{recipe.description}}</p>
+                </div>
+            </div>
+            <div class="recipe-product">
+                <h2>Продукты: </h2>{{recipe.products|linebreaks}}
+            </div>
+            <p>Количество порций: {{recipe.number_servings}} шт.</p>
+            <p>Время приготовления: {{recipe.time_preparing}} минут.</p>
+            <p>Калорийность: {{recipe.calorie}} ккал.</p>
+            <hr>
+            <div class="recipe-step-preparing">
+                <h3>Пошаговый рецепт</h3>
+                {% for i in recipe_step_preparing %}
+                    <p class="step">Шаг {{ forloop.counter }}</p>
+                    <section class="recipe-step-img-and-description">
+                        <figure class="recipe-step-image">
+                            <img src="{{ i.step_image.url }}" width="100" height="150" alt="Шаг {{ forloop.counter }}">
+                        </figure>
+                        <div class="recipe-step-description">
+                            <p>{{ i.step_description }}</p>
+                        </div>
+                    </section>
+                    <hr>
+                {% endfor %}
+            </div>
+        </article>
+        <hr>
+        <!-- Комментарии -->
+        <article id="comments">
+            <h3>Комментарии</h3>
+            <div class="comments-list">
+            {% if comments %}
+                {% for comm in comments %}
+                    <article class="comm-autor-img-and-content">
+                        <span class="comment-date">Опубликовано: {{comm.time_create}}</span>
+                        <figure class="user-image">
+                            {% if comm.user.avatar %}
+                                <img src="{{ comm.user.avatar.url }}" class="avatar"
+                                                      alt="comm.user.name">
+                                    <span class="comm-autor">{{comm.user}}</span>
+                            {% else %}
+                                <img src="/media/default_images/no_image.jpeg" class="avatar"
+                                                      alt="Нет аватара">
+                                    <span class="comm-autor">{{comm.user}}</span>
+                            {% endif %}
+                        </figure>
+                        <div class="comm-content">
+                            <p>{{comm.content}}</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <h4>Пока комментариев нет. Оставьте свой!</h4>
+            {% endif %}
+            </div>
+        </article>
+        <br>
+        <!-- Форма добавления комментария -->
+        <section aria-label="Добавить комментарий" class="add-comm">
+            <h2>Добавить комментарий: </h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token  %}
+                <div class="form-error">{{ form.non_field_errors }}</div>
+                {% for f in comments_form %}
+                    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}</label> {{ f }}</p>
+                    <div class="form-error">
+                        {{ f.errors }}
+                    </div>
+                {% endfor %}
+                <p><button type="submit" class="submit-button">Добавить</button></p>
+            </form>
+        </section>
+        <br>
+        <!-- Кнопка "Вернуться на главную" -->
+        <div class="no_delete_button">
+            <a href="{% url 'home' %}">Вернуться на главную</a>
+        </div>
     </div>
-</article>
-<br>
-<!-- Форма добавления комментария -->
-<section aria-label="Добавить комментарий">
-    <h2>Добавить комментарий: </h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token  %}
-        <div class="form-error">{{ form.non_field_errors }}</div>
-        {% for f in comments_form %}
-            <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}</label> {{ f }}</p>
-            <div class="form-error">{{ f.errors }}</div>
-        {% endfor %}
-        <p><button type="submit">Добавить</button></p>
-    </form>
-</section>
-<br>
-<!-- Кнопка "Вернуться на главную" -->
-<div class="no_delete_button">
-    <a href="{% url 'home' %}">Вернуться на главную</a>
 </div>
 {% endblock %}

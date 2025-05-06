@@ -16,11 +16,11 @@
     <header class="page-header">
     <a href="{% url 'home' %}">
         <img src="/media/default_images/logo.png" title="Главная страница сайта"
-             alt="Логотип сайта" class="logo" width="50px" height="50px">
+             alt="Логотип сайта" class="logo">
     </a>
 
     <div class="site-name">ВкусноСам</div>
-    <div class="deviz">Ещи, делись, готовь!</div>
+    <div class="deviz">Ищи, делись, готовь!</div>
 
     <!-- Отображение сообщений -->
     {% if messages %}
@@ -32,58 +32,26 @@
     {% endif %}
 
     <!--     Блок навигации    -->
-    <nav>
+    <nav class="nav-block">
         {% if user.is_authenticated %}
+            <p><a href="{% url 'users:profile' %}" class="username" data-tooltip="Детальная информация о пользователе">Профиль {{user.username}}</a></p>
             <!--   Форма для выхода из аккаунта     -->
             <form method="post" action="{% url 'users:logout' %}">
                 {% csrf_token %}
-                <button type="submit">Выйти</button>
+                <button type="submit" class="exit">Выйти</button>
             </form>
 
-            <p><a href="{% url 'users:profile' %}">Профиль {{user.username}}</a></p>
-            <p><a href="{% url 'create_recipe' %}">Добавить рецепт!"</a></p>
         {% else %}
             <p><a href="{% url 'users:login' %}">Авторизация</a></p>
             <p><a href="{% url 'users:register' %}">Регистрация</a></p>
             <p ><a href="{% url 'users:password_reset' %}">Забыли пароль?</a></p>
         {% endif %}
         {% if user.is_superuser %}
-            <a href=" {% url 'admin:index' %} ">Админка</a>
+            <a href=" {% url 'admin:index' %}" class="admin">Админка</a>
         {% endif %}
     </nav>
     </header>
     <!-- конец блока хедер -->
-
-<!--  Sidebar слева  -->
-
-    <aside class="sidebar-left">
-        Топ блюд по рейтингу:
-    {% rating_recipes_list  as reci %}
-        {% for rec in reci %}
-            <p>Название блюда: <a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
-            {% if rec.image %}
-                <p><a href="{{ rec.get_absolute_url }}"><img src="{{rec.image.url}}" width="75px" height="75px" ></a></p>
-            {% else %}
-                <p><img src="/media/default_images/no_image.jpeg" width="75px" height="75px"></p>
-            {% endif %}
-        {% endfor %}
-    </aside>
-<!-- конец левого Sidebar -->
-
-<!--  Sidebar справа  -->
-    <aside class="sidebar-right">
-        Топ блюд по просмотрам:
-    {% viewing_quantity_recipes  as recip %}
-        {% for rec in recip %}
-            <p>Название блюда: <a href="{{ rec.get_absolute_url }}">{{rec.name}}</a></p>
-            {% if rec.image %}
-                <p><a href="{{ rec.get_absolute_url }}"><img src="{{rec.image.url}}" width="75px" height="75px" ></a></p>
-            {% else %}
-                <p><img src="/media/default_images/no_image.jpeg" width="75px" height="75px"></p>
-            {% endif %}
-        {% endfor %}
-    </aside>
-<!-- конец правого Sidebar -->
 
 <!-- Блок контента-->
 <main class="content">
