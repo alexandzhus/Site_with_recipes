@@ -34,9 +34,10 @@ class RecipeForm(forms.ModelForm):
         fields = ['name', 'image', 'description', 'products', 'number_servings',
                   'time_preparing', 'tags_category', 'calorie']
         labels = {
-            'tags_category': 'Выберите к какому типа блюда относится рецепт',
-            'time_preparing': 'Время приготовления (мин. )',
-            'calorie': 'Калорийность (на одну порцию )',
+            'image': 'Изображение ',
+            'tags_category': 'Выберите к какому типа блюда относится рецепт ',
+            'time_preparing': 'Время приготовления (мин.)   ',
+            'calorie': 'Калорийность (на одну порцию)   ',
         }
         validators = {
             'products': [validate_text_format],
@@ -51,7 +52,7 @@ class RecipeForm(forms.ModelForm):
         name = self.cleaned_data['name']
         if len(name) < 3:
             raise ValidationError("Длина менее 3 символов")
-        elif len(name) > 50:
+        elif len(name) > 255:
             raise ValidationError("Длина более 50 символов")
         return name
     def clean_products(self) -> str:
@@ -75,6 +76,11 @@ class CommentForm(forms.ModelForm):
         labels = {
             'content': "Комментарий"
         }
+        widgets = {'content': forms.Textarea(attrs={
+            'rows': 3,
+            'cols': 25,
+        }),
+        }
 
     def clean_content(self) -> str:
         """
@@ -85,8 +91,8 @@ class CommentForm(forms.ModelForm):
         content = self.cleaned_data['content']
         if len(content) < 2:
             raise ValidationError("Длина менее 2 символов. Слишком короткий комментарий!")
-        elif len(content) > 1000:
-            raise ValidationError("Длина более 1000 символов. Слишком длинный комментарий!")
+        elif len(content) > 3000:
+            raise ValidationError("Длина более 3000 символов. Слишком длинный комментарий!")
         return content
 
 
