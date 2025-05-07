@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.transaction import commit
 
 from recipes.models import Recipe, Comment, Rating, RecipeStepPreparing
 
@@ -55,6 +56,7 @@ class RecipeForm(forms.ModelForm):
         elif len(name) > 255:
             raise ValidationError("Длина более 50 символов")
         return name
+
     def clean_products(self) -> str:
         """
         Метод для проверки валидности поля products.
@@ -64,6 +66,31 @@ class RecipeForm(forms.ModelForm):
         products = self.cleaned_data['products']
         validate_text_format(products)
         return products
+
+    def save(self, commit=True) -> Recipe:
+        """
+        Метод берет названия продуктов из поля products, после чего создает их них список.
+        Далее из списка создаются привязанные к рецепту теги.
+        :param commit: Если True, сохраняет объект в БД. Если False, возвращает несохраненный объект.
+        :return: Объект модели Recipe (сохраненный или нет, в зависимости от commit)
+        """
+        recipe = super().save(commit=False)  # Получаем несохраненный объект Recipe
+
+        if commit:
+            recipe.save()  # Сохраняем рецепт в БД
+            self.save_m2m()  # Сохраняем ManyToMany-поля (если есть)
+
+            # Обрабатываем продукты и добавляем теги
+            products_text = self.cleaned_data.get('products', '')
+            print(products_text)
+            if products_text:
+                product_names = recipe.create_list_from_data_field_products()  # Получаем список названий
+                print(product_names)
+                recipe.tags.add(*product_names)
+
+        return recipe
+
+
 
 
 class CommentForm(forms.ModelForm):
