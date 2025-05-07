@@ -1,3 +1,4 @@
+import re
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -7,7 +8,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from taggit.managers import TaggableManager
 
-from recipes.utils import filter_valid_lines
+
 
 
 def translit_to_eng(s: str) -> str:
@@ -37,7 +38,7 @@ class Recipe(models.Model):
     products = models.TextField(blank=True, verbose_name='Какие продукты')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,
                              related_name='recipes', verbose_name='Пользователь', null=True, default=None)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     tags_category = models.ForeignKey('TagsCategory', on_delete=models.CASCADE, related_name='recipes_cat',
                                       verbose_name='Категория тегов', null=True)
     views = models.PositiveIntegerField(default=0, verbose_name='Кол-во просмотров')  # Поле для хранения количества просмотров
@@ -94,24 +95,34 @@ class Recipe(models.Model):
         Метод для создания списка из данных поля products.
         :return: List
         """
-        # фильтруем строки, оставляя только те, которые содержат тире и заканчиваются на точку с запятой(метод из
-        # файла utils.py).
-        data_string = filter_valid_lines(self.products)
-        # пустой словарь
-        result_dict = {}
+
+        if not self.products:
+            return []
+        result_names = []
+        # Нормализуем текст: заменяем все тире/дефисы на единый разделитель
+        normalized_text = re.sub(r'[–—]', '-', self.products)
+
         # Обрабатываем каждую строку
-        for line in data_string:
-            # Проверяем, что строка заканчивается на точку с запятой
-            if not line.endswith(';'):
-                continue  # Пропускаем строки, которые не заканчиваются на ;
-            line = line.rstrip(';').strip()
-            # Разделяем строку по дефису
-            key, value = line.split("-", 1)  # 1 означает, что разделяем только по первому дефису
-            # Убираем лишние пробелы и добавляем в словарь
-            result_dict[key.strip()] = value.strip()
-        # создаем список с ключами словаря.
-        keys_list = list(result_dict.keys())
-        return keys_list
+        for line in normalized_text.split(';'):
+            line = line.strip()
+            if not line or '-' not in line:
+                continue
+
+            # Разделяем по первому дефису
+            product_part = line.split('-', 1)[0].strip()
+
+            # Удаляем содержимое в скобках (если есть)
+            product_part = re.sub(r'\(.*?\)', '', product_part).strip()
+
+            # Берем первые два слова (игнорируя проценты и другие спецсимволы)
+            words = [word for word in product_part.split() if not word.startswith(('%',))]
+            first_two_words = ' '.join(words[:2]) if words else ''
+
+            if first_two_words:
+                result_names.append(first_two_words)
+
+        return list(set(result_names))  # Удаляем дубликаты
+
 
 
     class Meta:
