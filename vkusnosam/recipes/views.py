@@ -277,13 +277,19 @@ class CreateRecipe(LoginRequiredMixin, CreateView):
         step_descriptions = self.request.POST.getlist('step_description')
         step_images = self.request.FILES.getlist('step_image')
 
-        if step_descriptions or step_images:
-            for step_description, step_image in zip(step_descriptions, step_images):
-                RecipeStepPreparing.objects.create(recipe=recipe, users=self.request.user,
-                                                   step_image=step_image, step_description=step_description)
-
-                print(step_image, step_description )
-
+        # Обрабатываем шаги, где заполнено хотя бы одно поле
+        for i in range(max(len(step_descriptions), len(step_images))):
+            # Безопасно получаем значения для текущего шага
+            description = step_descriptions[i] if i < len(step_descriptions) else ''
+            image = step_images[i] if i < len(step_images) else None
+            # Создаем шаг, если заполнено хотя бы одно поле
+            if description.strip() or image:
+                RecipeStepPreparing.objects.create(
+                    recipe=recipe,
+                    users=self.request.user,
+                    step_description=description,
+                    step_image=image
+                )
         return super().form_valid(form)
 
 
